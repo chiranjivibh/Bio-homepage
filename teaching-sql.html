@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Interactive SQL — Chiranjivi Bhattarai</title>
+
+<script src="libs/header-attrs-2.31/header-attrs.js"></script>
+<!-- _includes/head.html  ─  injected into <head> of every page -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="author"   content="Chiranjivi Bhattarai" />
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+
+<!-- Favicon – place favicon.ico in site root -->
+<link rel="icon" href="favicon.ico" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+
+
+
+
+</head>
+
+<body>
+
+
+<!-- _includes/sidebar.html  ─  injected before <body> content on every page.
+     EDIT:  sb-avi (initials) · sb-name · sb-role · social links             -->
+
+<div class="ov" id="ov"></div>
+
+<nav class="sidebar" id="sidebar">
+
+  <!-- ── Brand ──────────────────────────────────── -->
+  <div class="sb-brand">
+    <div class="sb-avi">CB</div>         <!-- ← change to your initials -->
+    <div class="sb-name">Chiranjivi Bhattarai</div> <!-- ← change to your name     -->
+    <div class="sb-role"> researcher &amp; educator</div>
+  </div>
+
+  <!-- ── Nav links ──────────────────────────────── -->
+  <div class="nav-body">
+    <div class="nav-grp">Main</div>
+    <a href="index.html"           class="nav-link">🏠 About</a>
+    <a href="projects.html"        class="nav-link">🔬 Projects</a>
+
+    <div class="nav-grp">Teaching</div>
+    <a href="teaching-r.html"      class="nav-link">📊 Interactive R</a>
+    <a href="teaching-python.html" class="nav-link">🐍 Interactive Python</a>
+    <a href="teaching-sql.html"    class="nav-link">🗄️ Interactive SQL</a>
+  </div>
+
+  <!-- ── Social links ───────────────────────────── -->
+  <div class="sb-foot">
+    <a href="https://github.com/chiranjivibh"  class="soc" target="_blank" title="GitHub">GH</a>
+    <a href="https://twitter.com/chiranjivibh" target="_blank" class="social-btn" title="Twitter">𝕏</a>
+    <a href="https://linkedin.com/in/chiranjivibh" class="soc" target="_blank" title="LinkedIn">in</a>
+    <a href="mailto:cbhattar@dri.edu"        class="soc"                 title="Email">@</a>
+  </div>
+
+</nav>
+
+<!-- Mobile hamburger button -->
+<button class="ham" id="ham" aria-label="Open menu">
+  <span></span><span></span><span></span>
+</button>
+
+<!-- Page content wraps in <main class="main"> -->
+<main class="main">
+
+
+<h1 class="title toc-ignore">Interactive SQL — Chiranjivi Bhattarai</h1>
+
+
+
+<!-- ═══════════════════════════════════════════════
+     sql.js — SQLite compiled to WebAssembly.
+     Loads instantly. All data is in-memory (resets on reload).
+     Three sample tables: students · courses · enrollments
+     Docs: https://sql.js.org
+═══════════════════════════════════════════════ -->
+<!-- Load sql.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/sql-wasm.js"></script>
+<script>
+/* Initialize sql.js, seed sample data, and expose run/clear functions */
+var DB = null;
+
+function setStatus(cls, msg) {
+document.querySelectorAll('.sqd').forEach(function(d){ d.className='dot sqd '+cls; });
+document.querySelectorAll('.sqd-txt').forEach(function(t){ t.textContent=msg; });
+}
+
+initSqlJs({ locateFile: function(f){
+return 'https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/'+f;
+}}).then(function(SQL){
+DB = new SQL.Database();
+
+/* Seed sample data */
+DB.run(`
+CREATE TABLE students(id INT,name TEXT,dept TEXT,year INT,gpa REAL,credits INT);
+INSERT INTO students VALUES
+(1,'Alice','Statistics',3,3.92,90),(2,'Bob','CS',2,3.45,60),
+(3,'Carol','Math',4,3.78,120),(4,'Dave','Statistics',1,2.89,30),
+(5,'Eve','CS',3,3.67,90),(6,'Frank','Math',2,3.12,60),
+(7,'Grace','Statistics',4,3.95,120),(8,'Hank','CS',1,3.01,30),
+(9,'Iris','Math',3,3.55,90),(10,'Jack','Statistics',2,2.78,60);
+
+CREATE TABLE courses(id INT,name TEXT,dept TEXT,credits INT,instructor TEXT);
+INSERT INTO courses VALUES
+(1,'Probability','Statistics',3,'Prof. Smith'),
+(2,'Linear Algebra','Math',3,'Prof. Lee'),
+(3,'Algorithms','CS',4,'Prof. Chen'),
+(4,'Bayesian Stats','Statistics',3,'Prof. Smith'),
+(5,'Data Structures','CS',3,'Prof. Chen'),
+(6,'Machine Learning','CS',3,'Prof. Kim');
+
+CREATE TABLE enrollments(student_id INT,course_id INT,grade TEXT,score REAL);
+INSERT INTO enrollments VALUES
+(1,1,'A',95),(1,4,'A',92),(2,3,'B+',87),(2,5,'A-',91),
+(3,2,'A',96),(4,1,'C+',76),(5,6,'A',94),(6,2,'B',84),
+(7,4,'A',98),(8,5,'C',72),(9,2,'B+',88),(10,1,'C+',77);
+`);
+
+setStatus('ok','SQLite ready ✓  students · courses · enrollments loaded');
+document.querySelectorAll('.sqr').forEach(function(b){ b.disabled=false; });
+}).catch(function(e){ setStatus('fail','Error: '+e.message); });
+
+window.runSQL = function(id) {
+var ta  = document.getElementById('ta'+id);
+var out = document.getElementById('ot'+id);
+var btn = document.getElementById('bt'+id);
+if(!ta||!out||!DB) return;
+btn.disabled=true; out.innerHTML='';
+try {
+var res = DB.exec(ta.value.trim());
+if(!res.length){
+out.innerHTML='<span style="color:#10b981">&#10003; Query OK (no rows returned)</span>';
+} else {
+res.forEach(function(r){
+var t=document.createElement('table'); t.className='sql-tbl';
+var hr=t.createTHead().insertRow();
+r.columns.forEach(function(c){
+var th=document.createElement('th'); th.textContent=c; hr.appendChild(th);
+});
+var b=t.createTBody();
+r.values.forEach(function(row){
+var tr=b.insertRow();
+row.forEach(function(v){ tr.insertCell().textContent=(v==null?'NULL':v); });
+});
+out.appendChild(t);
+var n=document.createElement('div'); n.className='sql-cnt';
+n.textContent=r.values.length+' row'+(r.values.length!==1?'s':'');
+out.appendChild(n);
+});
+}
+} catch(e){
+out.innerHTML='<span style="color:#ef4444;font-family:monospace;font-size:.85rem">Error: '+e.message+'</span>';
+}
+btn.disabled=false;
+};
+
+window.clrSQL=function(id){
+var o=document.getElementById('ot'+id); if(o) o.innerHTML='';
+};
+
+window.copySQL = function(id){
+var ta = document.getElementById('ta'+id);
+if(!ta) return;
+navigator.clipboard.writeText(ta.value).then(function(){
+var b = document.getElementById('cp'+id);
+if(b){ var old=b.textContent; b.textContent='Copied'; setTimeout(()=>b.textContent=old,1200); }
+});
+};
+
+/* Configuration: list of candidate DB URLs (try in order) */
+const REMOTE_DB_URLS = [
+  // Put your hosted .sqlite file URLs here (CORS must allow fetch)
+  // Example: 'https://example.com/data/my_database.sqlite'
+  // If empty, code will skip remote fetch and use seeded DB.
+  'https://example.com/path/to/my_database.sqlite'
+];
+
+/* Optional localStorage key to persist DB between visits */
+const LS_DB_KEY = 'sqljs_saved_db_base64';
+
+/* Helper: convert ArrayBuffer -> Uint8Array */
+function toUint8(arr) { return new Uint8Array(arr); }
+
+/* Helper: base64 <-> Uint8Array */
+function uint8ToBase64(u8) {
+  let CHUNK = 0x8000;
+  let index = 0;
+  let length = u8.length;
+  let result = '';
+  while (index < length) {
+    let slice = u8.subarray(index, Math.min(index + CHUNK, length));
+    result += String.fromCharCode.apply(null, slice);
+    index += CHUNK;
+  }
+  return btoa(result);
+}
+function base64ToUint8(b64) {
+  const bin = atob(b64);
+  const len = bin.length;
+  const u8 = new Uint8Array(len);
+  for (let i = 0; i < len; i++) u8[i] = bin.charCodeAt(i);
+  return u8;
+}
+
+/* Status UI helper (reuse your setStatus style) */
+function setStatus(cls, msg) {
+  document.querySelectorAll('.sqd').forEach(function(d){ d.className='dot sqd '+cls; });
+  document.querySelectorAll('.sqd-txt').forEach(function(t){ t.textContent=msg; });
+}
+
+/* Initialize sql.js and load DB from (1) localStorage, (2) remote URL, (3) seeded SQL */
+initSqlJs({ locateFile: function(f){
+  return 'https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/'+f;
+}}).then(async function(SQL){
+  setStatus('load','Initializing sql.js…');
+
+  // Try localStorage first
+  try {
+    const saved = localStorage.getItem(LS_DB_KEY);
+    if (saved) {
+      const u8 = base64ToUint8(saved);
+      window.DB = new SQL.Database(u8);
+      setStatus('ok','SQLite ready ✓ (loaded from localStorage)');
+      document.querySelectorAll('.sqr').forEach(function(b){ b.disabled=false; });
+      return;
+    }
+  } catch(e) {
+    console.warn('localStorage DB load failed', e);
+  }
+
+  // Try remote URLs in order
+  for (let url of REMOTE_DB_URLS) {
+    if (!url) continue;
+    try {
+      setStatus('load','Fetching DB from ' + url + ' …');
+      const resp = await fetch(url, { mode: 'cors' });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const ab = await resp.arrayBuffer();
+      const u8 = toUint8(ab);
+      window.DB = new SQL.Database(u8);
+      setStatus('ok','SQLite ready ✓ (loaded from ' + url + ')');
+      document.querySelectorAll('.sqr').forEach(function(b){ b.disabled=false; });
+
+      // Optionally persist to localStorage for faster subsequent loads
+      try {
+        const b64 = uint8ToBase64(u8);
+        localStorage.setItem(LS_DB_KEY, b64);
+      } catch(e) {
+        console.warn('Could not save DB to localStorage', e);
+      }
+
+      return; // success
+    } catch(err) {
+      console.warn('Remote DB load failed for', url, err);
+      // try next URL
+    }
+  }
+
+  // Fallback: create in-memory DB and seed it (your existing seed SQL)
+  try {
+    window.DB = new SQL.Database();
+    window.DB.run(`
+      CREATE TABLE students(id INT,name TEXT,dept TEXT,year INT,gpa REAL,credits INT);
+      INSERT INTO students VALUES
+        (1,'Alice','Statistics',3,3.92,90),(2,'Bob','CS',2,3.45,60),
+        (3,'Carol','Math',4,3.78,120),(4,'Dave','Statistics',1,2.89,30),
+        (5,'Eve','CS',3,3.67,90),(6,'Frank','Math',2,3.12,60),
+        (7,'Grace','Statistics',4,3.95,120),(8,'Hank','CS',1,3.01,30),
+        (9,'Iris','Math',3,3.55,90),(10,'Jack','Statistics',2,2.78,60);
+
+      CREATE TABLE courses(id INT,name TEXT,dept TEXT,credits INT,instructor TEXT);
+      INSERT INTO courses VALUES
+        (1,'Probability','Statistics',3,'Prof. Smith'),
+        (2,'Linear Algebra','Math',3,'Prof. Lee'),
+        (3,'Algorithms','CS',4,'Prof. Chen'),
+        (4,'Bayesian Stats','Statistics',3,'Prof. Smith'),
+        (5,'Data Structures','CS',3,'Prof. Chen'),
+        (6,'Machine Learning','CS',3,'Prof. Kim');
+
+      CREATE TABLE enrollments(student_id INT,course_id INT,grade TEXT,score REAL);
+      INSERT INTO enrollments VALUES
+        (1,1,'A',95),(1,4,'A',92),(2,3,'B+',87),(2,5,'A-',91),
+        (3,2,'A',96),(4,1,'C+',76),(5,6,'A',94),(6,2,'B',84),
+        (7,4,'A',98),(8,5,'C',72),(9,2,'B+',88),(10,1,'C+',77);
+    `);
+
+    setStatus('ok','SQLite ready ✓ (seeded in-memory)');
+    document.querySelectorAll('.sqr').forEach(function(b){ b.disabled=false; });
+  } catch(e) {
+    setStatus('fail','DB init failed: ' + e.message);
+    console.error(e);
+  }
+}).catch(function(e){
+  setStatus('fail','Error loading sql.js: ' + e.message);
+  console.error(e);
+});
+
+/* Utility: export current DB and download as file */
+function downloadDB(filename='export.sqlite') {
+  if (!window.DB) return alert('No DB loaded');
+  const u8 = window.DB.export();
+  const blob = new Blob([u8], { type: 'application/octet-stream' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 1000);
+}
+
+/* Utility: save current DB to localStorage (base64) */
+function saveDBToLocalStorage() {
+  if (!window.DB) return alert('No DB loaded');
+  try {
+    const u8 = window.DB.export();
+    const b64 = uint8ToBase64(u8);
+    localStorage.setItem(LS_DB_KEY, b64);
+    setStatus('ok','DB saved to localStorage');
+  } catch(e) {
+    console.warn('saveDBToLocalStorage failed', e);
+    setStatus('fail','Could not save DB to localStorage');
+  }
+}
+
+/* Utility: clear persisted DB in localStorage */
+function clearPersistedDB() {
+  localStorage.removeItem(LS_DB_KEY);
+  setStatus('load','Cleared persisted DB');
+}
+
+</script>
+<style>
+/* Styling for SQL teaching blocks */
+.content { max-width: 1200px; margin: 1.2rem auto; padding: 0 1rem; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial; color:#cfe8ff; }
+.ib.info { display:flex; align-items:center; gap:.6rem; padding:8px 10px; border-radius:8px; background:#071022; border:1px solid #11161a; margin-bottom:12px; color:#cfe8ff; }
+.dot.sqd { width:10px; height:10px; border-radius:50%; display:inline-block; margin-right:.5rem; }
+.dot.sqd.load { background:#f59e0b; box-shadow:0 0 6px rgba(245,158,11,.12); }
+.dot.sqd.ok { background:#10b981; box-shadow:0 0 6px rgba(16,185,129,.12); }
+.dot.sqd.fail { background:#ef4444; box-shadow:0 0 6px rgba(239,68,68,.12); }
+
+.schema { background:#071022; border:1px solid #11161a; padding:12px; border-radius:8px; color:#9bd3ff; margin-bottom:12px; }
+.sc-t { font-weight:700; color:#cfe8ff; margin-right:6px; }
+.sc-c { background:#0b1220; padding:2px 6px; border-radius:4px; margin-right:6px; color:#cfe8ff; }
+.sc-k { color:#94a3b8; margin-left:6px; }
+
+.lesson { margin-bottom:1.2rem; }
+.lh { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:8px; }
+.ln { font-weight:700; color:#cfe8ff; margin-right:8px; }
+
+.py-repl { background:#0b0f13; border:1px solid #11161a; border-radius:8px; padding:12px; color:#cfe8ff; box-shadow: 0 6px 18px rgba(2,6,10,0.25); }
+.py-repl .controls { display:flex; gap:8px; align-items:center; margin-bottom:10px; }
+.py-repl button { background:linear-gradient(180deg,#0f1724,#0b1220); color:#cfe8ff; border:1px solid #26303a; padding:6px 10px; border-radius:6px; cursor:pointer; }
+.py-repl button[disabled] { opacity:0.5; cursor:not-allowed; }
+.badge { font-size:.75rem; padding:4px 8px; border-radius:999px; background:#071022; color:#9bd3ff; border:1px solid #1f2933; }
+
+.py-repl textarea { width:100%; min-height:220px; background:#010409; color:#cfe8ff; border:1px solid #1f2933; padding:14px; font-family: ui-monospace, Menlo, Monaco, "Roboto Mono", monospace; font-size:15px; line-height:1.45; border-radius:6px; resize:vertical; box-sizing:border-box; }
+.py-out { background:#020406; color:#dbeafe; border:1px solid #11161a; padding:12px; margin-top:10px; border-radius:6px; min-height:80px; white-space:normal; }
+.sql-tbl { width:100%; border-collapse:collapse; margin-top:8px; }
+.sql-tbl th, .sql-tbl td { border:1px solid #11161a; padding:8px 10px; text-align:left; font-family: ui-monospace, monospace; font-size:0.95rem; color:#e6eef6; }
+.sql-tbl thead th { background:#071022; color:#9bd3ff; }
+.sql-cnt { color:#94a3b8; font-size:0.9rem; margin-top:6px; }
+
+.controls-right { margin-left:auto; display:flex; gap:8px; align-items:center; }
+.small-btn { padding:6px 8px; font-size:0.9rem; border-radius:6px; }
+
+@media (max-width:900px){
+.py-repl textarea { min-height:180px; font-size:14px; }
+.content { padding: 0 0.6rem; }
+}
+</style>
+<header class="hero">
+<div class="eyebrow" style="color:#94a3b8">
+Teaching — SQL
+</div>
+<h1 style="margin:.2rem 0 0;">
+Interactive SQL Practice
+</h1>
+<p style="margin:.2rem 0 .6rem;color:#94a3b8">
+Run SQL in your browser with sql.js. Use the blocks below to practice
+queries.
+</p>
+</header>
+<div class="content">
+<!-- Status banner -->
+<div class="ib info">
+<i>🗄️</i>
+<div>
+<p><span class="dot sqd load"></span> <span class="sqd-txt"
+style="font-family:monospace;font-size:.85rem">Loading
+sql.js…</span></p>
+</div>
+</div>
+<!-- Schema reference -->
+<div class="schema">
+<div>
+<p><span class="sc-t">students</span> <span class="sc-c">id</span> <span
+class="sc-k">INT</span> · <span class="sc-c">name</span> · <span
+class="sc-c">dept</span> · <span class="sc-c">year</span> · <span
+class="sc-c">gpa</span> · <span class="sc-c">credits</span></p>
+</div>
+<div style="margin-top:6px">
+<p><span class="sc-t">courses</span> <span class="sc-c">id</span> <span
+class="sc-k">INT</span> · <span class="sc-c">name</span> · <span
+class="sc-c">dept</span> · <span class="sc-c">credits</span> · <span
+class="sc-c">instructor</span></p>
+</div>
+<div style="margin-top:6px">
+<p><span class="sc-t">enrollments</span> <span
+class="sc-c">student_id</span> <span class="sc-k">FK</span> · <span
+class="sc-c">course_id</span> <span class="sc-k">FK</span> · <span
+class="sc-c">grade</span> · <span class="sc-c">score</span></p>
+</div>
+</div>
+<!-- Example SQL practice block (rendered below by R) -->
+<div id="example-sql-snippets" class="section level1">
+<h1>Example SQL snippets</h1>
+<div class="lesson">
+<div class="lh">
+<div>
+<div class="ln">
+PRACTICE
+</div>
+<h3>
+Top 5 students by GPA
+</h3>
+</div>
+<span class="tag practice">Exercise</span>
+</div>
+<div class="lb">
+<p style="margin:0 0 8px 0;color:#94a3b8">
+List top 5 students ordered by GPA.
+</p>
+<div class="py-repl">
+<div class="controls">
+<button type="button" onclick="clrSQL(&#39;sql1&#39;)">
+Clear
+</button>
+<button class="sqr" id="btsql1" type="button" onclick="runSQL(&#39;sql1&#39;)" disabled>
+▶ Run
+</button>
+<div class="controls-right">
+<button id="cpsql1" class="small-btn" onclick="copySQL(&#39;sql1&#39;)">
+Copy
+</button>
+<button class="small-btn" onclick="document.getElementById(&#39;tasql1&#39;).value = document.getElementById(&#39;tasql1&#39;).dataset.default; localStorage.removeItem(&#39;sql_autosave_sql1&#39;);">
+Reset
+</button>
+</div>
+<span class="badge" style="margin-left:8px">SQL (sql.js)</span>
+</div>
+<textarea id="tasql1" spellcheck="false" style="min-height:220px;" data-default="SELECT id, name, dept, gpa FROM students ORDER BY gpa DESC LIMIT 5;">SELECT id, name, dept, gpa FROM students ORDER BY gpa DESC LIMIT 5;</textarea>
+<div id="otsql1" class="py-out idle">
+Click ▶ Run to execute
+</div>
+<div id="plsql1" class="plot-box" style="display:none">
+
+</div>
+</div>
+</div>
+</div>
+<div class="lesson">
+<div class="lh">
+<div>
+<div class="ln">
+PRACTICE
+</div>
+<h3>
+Department summary
+</h3>
+</div>
+<span class="tag practice">Exercise</span>
+</div>
+<div class="lb">
+<p style="margin:0 0 8px 0;color:#94a3b8">
+Count and average GPA by department.
+</p>
+<div class="py-repl">
+<div class="controls">
+<button type="button" onclick="clrSQL(&#39;sql2&#39;)">
+Clear
+</button>
+<button class="sqr" id="btsql2" type="button" onclick="runSQL(&#39;sql2&#39;)" disabled>
+▶ Run
+</button>
+<div class="controls-right">
+<button id="cpsql2" class="small-btn" onclick="copySQL(&#39;sql2&#39;)">
+Copy
+</button>
+<button class="small-btn" onclick="document.getElementById(&#39;tasql2&#39;).value = document.getElementById(&#39;tasql2&#39;).dataset.default; localStorage.removeItem(&#39;sql_autosave_sql2&#39;);">
+Reset
+</button>
+</div>
+<span class="badge" style="margin-left:8px">SQL (sql.js)</span>
+</div>
+<textarea id="tasql2" spellcheck="false" style="min-height:220px;" data-default="SELECT dept, COUNT(*) AS n_students, ROUND(AVG(gpa),2) AS avg_gpa FROM students GROUP BY dept;">SELECT dept, COUNT(*) AS n_students, ROUND(AVG(gpa),2) AS avg_gpa FROM students GROUP BY dept;</textarea>
+<div id="otsql2" class="py-out idle">
+Click ▶ Run to execute
+</div>
+<div id="plsql2" class="plot-box" style="display:none">
+
+</div>
+</div>
+</div>
+</div>
+<div class="lesson">
+<div class="lh">
+<div>
+<div class="ln">
+PRACTICE
+</div>
+<h3>
+High scorers and courses
+</h3>
+</div>
+<span class="tag practice">Exercise</span>
+</div>
+<div class="lb">
+<p style="margin:0 0 8px 0;color:#94a3b8">
+Join students, enrollments, and courses for high scores.
+</p>
+<div class="py-repl">
+<div class="controls">
+<button type="button" onclick="clrSQL(&#39;sql3&#39;)">
+Clear
+</button>
+<button class="sqr" id="btsql3" type="button" onclick="runSQL(&#39;sql3&#39;)" disabled>
+▶ Run
+</button>
+<div class="controls-right">
+<button id="cpsql3" class="small-btn" onclick="copySQL(&#39;sql3&#39;)">
+Copy
+</button>
+<button class="small-btn" onclick="document.getElementById(&#39;tasql3&#39;).value = document.getElementById(&#39;tasql3&#39;).dataset.default; localStorage.removeItem(&#39;sql_autosave_sql3&#39;);">
+Reset
+</button>
+</div>
+<span class="badge" style="margin-left:8px">SQL (sql.js)</span>
+</div>
+<textarea id="tasql3" spellcheck="false" style="min-height:220px;" data-default="SELECT s.name, c.name AS course, e.grade, e.score FROM enrollments e JOIN students s ON e.student_id=s.id JOIN courses c ON e.course_id=c.id WHERE e.score>=90 ORDER BY e.score DESC;">SELECT s.name, c.name AS course, e.grade, e.score FROM enrollments e JOIN students s ON e.student_id=s.id JOIN courses c ON e.course_id=c.id WHERE e.score>=90 ORDER BY e.score DESC;</textarea>
+<div id="otsql3" class="py-out idle">
+Click ▶ Run to execute
+</div>
+<div id="plsql3" class="plot-box" style="display:none">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- _includes/footer.html  ─  injected after body content on every page -->
+
+</main><!-- /.main -->
+
+<script src="js/nav.js"></script>
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

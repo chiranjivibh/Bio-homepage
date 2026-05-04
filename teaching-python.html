@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Interactive Python — Chiranjivi Bhattarai</title>
+
+<script src="libs/header-attrs-2.31/header-attrs.js"></script>
+<!-- _includes/head.html  ─  injected into <head> of every page -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="author"   content="Chiranjivi Bhattarai" />
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+
+<!-- Favicon – place favicon.ico in site root -->
+<link rel="icon" href="favicon.ico" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+
+
+
+
+</head>
+
+<body>
+
+
+<!-- _includes/sidebar.html  ─  injected before <body> content on every page.
+     EDIT:  sb-avi (initials) · sb-name · sb-role · social links             -->
+
+<div class="ov" id="ov"></div>
+
+<nav class="sidebar" id="sidebar">
+
+  <!-- ── Brand ──────────────────────────────────── -->
+  <div class="sb-brand">
+    <div class="sb-avi">CB</div>         <!-- ← change to your initials -->
+    <div class="sb-name">Chiranjivi Bhattarai</div> <!-- ← change to your name     -->
+    <div class="sb-role"> researcher &amp; educator</div>
+  </div>
+
+  <!-- ── Nav links ──────────────────────────────── -->
+  <div class="nav-body">
+    <div class="nav-grp">Main</div>
+    <a href="index.html"           class="nav-link">🏠 About</a>
+    <a href="projects.html"        class="nav-link">🔬 Projects</a>
+
+    <div class="nav-grp">Teaching</div>
+    <a href="teaching-r.html"      class="nav-link">📊 Interactive R</a>
+    <a href="teaching-python.html" class="nav-link">🐍 Interactive Python</a>
+    <a href="teaching-sql.html"    class="nav-link">🗄️ Interactive SQL</a>
+  </div>
+
+  <!-- ── Social links ───────────────────────────── -->
+  <div class="sb-foot">
+    <a href="https://github.com/chiranjivibh"  class="soc" target="_blank" title="GitHub">GH</a>
+    <a href="https://twitter.com/chiranjivibh" target="_blank" class="social-btn" title="Twitter">𝕏</a>
+    <a href="https://linkedin.com/in/chiranjivibh" class="soc" target="_blank" title="LinkedIn">in</a>
+    <a href="mailto:cbhattar@dri.edu"        class="soc"                 title="Email">@</a>
+  </div>
+
+</nav>
+
+<!-- Mobile hamburger button -->
+<button class="ham" id="ham" aria-label="Open menu">
+  <span></span><span></span><span></span>
+</button>
+
+<!-- Page content wraps in <main class="main"> -->
+<main class="main">
+
+
+<h1 class="title toc-ignore">Interactive Python — Chiranjivi
+Bhattarai</h1>
+
+
+
+<script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+<script>
+const PYODIDE_INDEX = "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/";
+
+let PY = null;
+let READY = false;
+
+function setStatus2(text, cls){
+  const txt = document.getElementById('py-status-text');
+  const dot = document.getElementById('py-status-dot');
+
+  if(txt) txt.textContent = text;
+  if(dot) dot.className = 'status-dot ' + cls;
+}
+
+function setStatus(text, cls){
+  // Main status bar
+  const txt1 = document.getElementById('py-status-text');
+  const dot1 = document.getElementById('py-status-dot');
+
+  if(txt1) txt1.textContent = text;
+  if(dot1) dot1.className = 'status-dot ' + cls;
+
+  // Secondary banner
+  const txt2 = document.getElementById('py-status-text-2');
+  const dot2 = document.getElementById('py-status-dot-2');
+
+  if(txt2) txt2.textContent = text;
+  if(dot2) dot2.className = 'dot pd ' + cls;
+}
+
+function setRunButtons(enabled){
+  document.querySelectorAll('.py-run').forEach(b => b.disabled = !enabled);
+}
+
+/* Load Pyodide */
+async function initPyodide(){
+  try {
+    setStatus('Loading Python runtime...', 'loading');
+
+    PY = await loadPyodide({ indexURL: PYODIDE_INDEX });
+
+    setStatus('Loading packages...', 'loading');
+
+    await PY.loadPackage(['numpy','pandas','matplotlib','scipy']);
+
+    READY = true;
+    setRunButtons(true);
+
+    setStatus('Python ready ✓', 'ready');
+
+  } catch(err){
+    console.error(err);
+    setStatus('Failed to load Python', 'fail');
+  }
+}
+
+initPyodide();
+
+/* RUN CODE */
+window.runPy = async function(id){
+  const ta = document.getElementById('ta' + id);
+  const out = document.getElementById('ot' + id);
+  const btn = document.getElementById('bt' + id);
+  const pltBox = document.getElementById('pl' + id);
+
+  if(!READY){
+    out.textContent = 'Python still loading...';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Running...';
+
+  out.textContent = '';
+  if(pltBox){
+    pltBox.innerHTML = '';
+    pltBox.style.display = 'none';
+  }
+
+  try {
+    PY.runPython(`
+import sys, io
+_buf = io.StringIO()
+sys.stdout = _buf
+sys.stderr = _buf
+`);
+
+    const code = ta.value;
+
+    const needsPlot = code.includes('plt.') || code.includes('matplotlib');
+
+    if(needsPlot){
+      PY.runPython(`
+import matplotlib
+matplotlib.use("AGG")
+import matplotlib.pyplot as plt
+`);
+    }
+
+    PY.runPython(code);
+
+    const output = PY.runPython('_buf.getvalue()');
+    out.textContent = output || '(no output)';
+
+    /* Plot rendering */
+    if(needsPlot && pltBox){
+      try {
+        const b64 = PY.runPython(`
+import base64, io
+buf = io.BytesIO()
+plt.savefig(buf, format="png", dpi=96, bbox_inches="tight")
+plt.close("all")
+buf.seek(0)
+base64.b64encode(buf.read()).decode()
+`);
+
+        if(b64){
+          pltBox.innerHTML = `<img src="data:image/png;base64,${b64}" style="max-width:100%;">`;
+          pltBox.style.display = 'block';
+        }
+      } catch(e){
+        console.warn('Plot failed:', e);
+      }
+    }
+
+  } catch(err){
+    try {
+      const captured = PY.runPython('_buf.getvalue()');
+      out.textContent = (captured || '') + '\\n' + err.message;
+    } catch {
+      out.textContent = err.message;
+    }
+  } finally {
+    try {
+      PY.runPython(`
+import sys
+sys.stdout = sys.__stdout__
+sys.stderr = sys.__stderr__
+`);
+    } catch {}
+
+    btn.disabled = false;
+    btn.textContent = '▶ Run';
+  }
+};
+
+/* CLEAR */
+window.clearPy = function(id){
+  const out = document.getElementById('ot' + id);
+  const pltBox = document.getElementById('pl' + id);
+
+  if(out){
+    out.textContent = 'Click ▶ Run to execute';
+  }
+
+  if(pltBox){
+    pltBox.innerHTML = '';
+    pltBox.style.display = 'none';
+  }
+};
+</script>
+<header class="hero">
+<div class="eyebrow">
+Teaching — Python
+</div>
+<h1>
+Interactive <em>Python</em>
+</h1>
+<p>
+Run Python in your browser — no installation. Powered by
+<strong>Pyodide</strong> (CPython → WebAssembly). NumPy · Pandas ·
+Matplotlib · SciPy preloaded.
+</p>
+</header>
+<div class="content">
+<!-- Status bar (visible to user) -->
+<div id="py-status" class="py-status">
+<span id="py-status-dot" class="status-dot loading"></span>
+<div id="py-status-text">
+Loading Python (Pyodide)…
+</div>
+<div style="margin-left:auto;font-size:.85rem;color:#475569">
+Runtime: <strong>Pyodide</strong>
+</div>
+</div>
+<div class="py-lesson">
+<div class="meta">
+<h4>
+Python Basics
+</h4>
+<div>
+Console
+</div>
+</div>
+<p style="margin:0 0 8px 0;color:#475569">
+Simple prints and expressions
+</p>
+<div class="py-repl">
+<div class="controls">
+<button type="button" onclick="clearPy(&#39;p1&#39;)">
+Clear
+</button>
+<button class="py-run" id="btp1" type="button" onclick="runPy(&#39;p1&#39;)" disabled>
+▶ Run
+</button>
+<span class="badge" style="margin-left:auto">Python (Pyodide)</span>
+</div>
+<textarea id="tap1" spellcheck="false">x = 42
+print(f"x = {x}, type = {type(x).__name__}")
+print(10/3)
+</textarea>
+<div id="otp1" class="py-out idle">
+Click ▶ Run to execute
+</div>
+</div>
+</div>
+<div class="py-lesson">
+<div class="meta">
+<h4>
+NumPy demo
+</h4>
+<div>
+Console
+</div>
+</div>
+<p style="margin:0 0 8px 0;color:#475569">
+Array ops and stats
+</p>
+<div class="py-repl">
+<div class="controls">
+<button type="button" onclick="clearPy(&#39;p2&#39;)">
+Clear
+</button>
+<button class="py-run" id="btp2" type="button" onclick="runPy(&#39;p2&#39;)" disabled>
+▶ Run
+</button>
+<span class="badge" style="margin-left:auto">Python (Pyodide)</span>
+</div>
+<textarea id="tap2" spellcheck="false">import numpy as np
+arr = np.arange(1,6)
+print(arr)
+print("mean:", arr.mean())
+</textarea>
+<div id="otp2" class="py-out idle">
+Click ▶ Run to execute
+</div>
+</div>
+</div>
+<div class="py-lesson">
+<div class="meta">
+<h4>
+Matplotlib plot
+</h4>
+<div>
+Plot
+</div>
+</div>
+<p style="margin:0 0 8px 0;color:#475569">
+Simple plot rendered below
+</p>
+<div class="py-repl">
+<div class="controls">
+<button type="button" onclick="clearPy(&#39;p3&#39;)">
+Clear
+</button>
+<button class="py-run" id="btp3" type="button" onclick="runPy(&#39;p3&#39;)" disabled>
+▶ Run
+</button>
+<span class="badge" style="margin-left:auto">Python (Pyodide)</span>
+</div>
+<textarea id="tap3" spellcheck="false">import numpy as np, matplotlib.pyplot as plt
+x = np.linspace(0,10,100)
+y = np.sin(x)
+plt.plot(x,y)
+plt.title("sin(x)")
+print("plot ready")
+</textarea>
+<div id="otp3" class="py-out idle">
+Click ▶ Run to execute
+</div>
+<div id="plp3" class="plot-box">
+
+</div>
+</div>
+</div>
+<div class="lesson">
+<div class="lh">
+<div>
+<div class="ln">
+PRACTICE
+</div>
+<h3>
+Practice: Basic Python and Plot
+</h3>
+</div>
+<span class="tag practice">Exercise</span>
+</div>
+<div class="lb">
+<p style="margin:0 0 8px 0;color:#94a3b8">
+Try editing the code and click Run. The plot renders below when
+matplotlib is used.
+</p>
+<div class="py-repl">
+<div class="controls">
+<button type="button" onclick="clearPy(&#39;practice1&#39;)">
+Clear
+</button>
+<button class="py-run" id="btpractice1" type="button" onclick="runPy(&#39;practice1&#39;)" disabled>
+▶ Run
+</button>
+<span class="badge" style="margin-left:auto">Python (Pyodide)</span>
+</div>
+<textarea id="tapractice1" spellcheck="false" style="min-height:420px;">import numpy as np
+import matplotlib.pyplot as plt
+
+# Simple data
+x = np.linspace(0, 2*np.pi, 200)
+y = np.sin(2*x) * np.exp(-0.2*x)
+
+# Print a short summary
+print(f"x range: {x.min():.2f} to {x.max():.2f}")
+print(f"y mean: {y.mean():.4f}")
+
+# Plot
+plt.style.use("dark_background")
+plt.figure(figsize=(8,3))
+plt.plot(x, y, color="#58a6ff", lw=2)
+plt.fill_between(x, y, color="#1f6feb", alpha=0.12)
+plt.title("Damped sine wave")
+plt.tight_layout()
+</textarea>
+<div id="otpractice1" class="py-out idle">
+Click ▶ Run to execute
+</div>
+<div id="plpractice1" class="plot-box">
+
+</div>
+</div>
+</div>
+</div>
+<style>
+/* Basic dark REPL styling */
+.content { max-width: 1100px; margin: 1.2rem auto; padding: 0 1rem; }
+.py-status { display:flex; align-items:center; gap:.6rem; padding:8px 10px; border-radius:8px; background:#f1f5f9; border:1px solid #e2e8f0; margin-bottom:12px; font-family:system-ui, -apple-system, "Segoe UI", Roboto, Arial; }
+.status-dot { width:10px; height:10px; border-radius:50%; display:inline-block; }
+.status-dot.loading { background:#f59e0b; }
+.status-dot.ready { background:#10b981; }
+.status-dot.fail { background:#ef4444; }
+
+.ib.info { display:flex; align-items:center; gap:.6rem; padding:8px 10px; border-radius:8px; background:#fff; border:1px solid #e6eef6; margin-bottom:12px; }
+.ib.info i { font-style:normal; }
+
+.lesson { max-width: 1100px; margin: 1rem auto; }
+.lh { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:8px; }
+.ln { font-weight:700; color:#0f1724; margin-right:8px; }
+
+.py-repl { background:#0b0f13; border:1px solid #11161a; border-radius:8px; padding:12px; color:#e6eef6; box-shadow: 0 6px 18px rgba(2,6,10,0.35); }
+.py-repl .controls { display:flex; gap:8px; align-items:center; margin-bottom:10px; }
+.py-repl button { background:linear-gradient(180deg,#0f1724,#0b1220); color:#cfe8ff; border:1px solid #26303a; padding:6px 10px; border-radius:6px; cursor:pointer; }
+.py-repl button[disabled] { opacity:0.5; cursor:not-allowed; }
+.badge { font-size:.75rem; padding:4px 8px; border-radius:999px; background:#071022; color:#9bd3ff; border:1px solid #1f2933; }
+
+.py-repl textarea { width:100%; min-height:360px; background:#010409; color:#cfe8ff; border:1px solid #1f2933; padding:14px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace; font-size:15px; line-height:1.45; border-radius:6px; resize:vertical; box-sizing:border-box; }
+.py-out { background:#020406; color:#dbeafe; border:1px solid #11161a; padding:12px; margin-top:10px; border-radius:6px; min-height:80px; white-space:pre-wrap; }
+.plot-box { background:#010409; border:1px solid #11161a; padding:8px; margin-top:10px; border-radius:6px; text-align:center; display:none; }
+
+@media (max-width:900px){
+.py-repl textarea { min-height:220px; font-size:14px; }
+.content { padding: 0 0.6rem; }
+}
+
+/* Make the entire REPL container wider */
+.py-repl {
+  width: 100%;
+  max-width: 1200px;     /* increase width */
+  margin: 1.5rem auto;   /* center it */
+  box-sizing: border-box;
+}
+
+/* Make the code editor bigger */
+.py-repl textarea {
+  width: 100%;
+  min-height: 320px;     /* increase height */
+  font-size: 16px;       /* larger text */
+  line-height: 1.45;
+  padding: 14px;
+  border-radius: 6px;
+  resize: vertical;      /* allow user to resize */
+  background: #0b1220;
+  color: #e6eef6;
+  border: 1px solid #333;
+  box-sizing: border-box;
+}
+
+/* Make output area bigger too */
+.py-out {
+  min-height: 120px;
+  font-size: 15px;
+  padding: 14px;
+  line-height: 1.5;
+}
+
+/* Make the lesson container wider */
+.lesson, .py-lesson {
+  max-width: 1200px;
+  margin: 1.5rem auto;
+}
+
+/* Optional: make plot area wider */
+.plot-box img {
+  max-width: 100%;
+}
+.py-repl textarea {
+  width: 100%;
+  min-height: 320px;
+  font-size: 16px;
+  padding: 14px;
+  line-height: 1.45;
+  resize: vertical;
+}
+
+.lesson, .py-lesson {
+  max-width: 1200px;
+  margin: 1.5rem auto;
+}
+</style>
+</div>
+
+<!-- _includes/footer.html  ─  injected after body content on every page -->
+
+</main><!-- /.main -->
+
+<script src="js/nav.js"></script>
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

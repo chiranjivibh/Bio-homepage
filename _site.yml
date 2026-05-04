@@ -1,0 +1,16 @@
+name: "portfolio"
+output_dir: "."
+
+# No navbar here — we use our own sidebar (injected via _includes/sidebar.html).
+
+output:
+  html_document:
+    theme: null
+    highlight: null
+    css: css/style.css
+    includes:
+      in_header:   _includes/head.html
+      before_body: _includes/sidebar.html
+      after_body:  _includes/footer.html
+    self_contained: false
+    lib_dir: libs

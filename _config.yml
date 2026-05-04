@@ -1,0 +1,11 @@
+title: "Chiranjivi Bhattarai | Portfolio"
+description: "Academic portfolio – statistics, Enviromental science, data science, teaching"
+url: "https://chiranjivibh.github.io"
+baseurl: ""
+theme: null
+exclude:
+  - "*.Rmd"
+  - "_site.yml"
+  - "_includes/"
+  - "render.R"
+  - "README.md"

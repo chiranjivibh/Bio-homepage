@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Interactive R — Chiranjivi Bhattarai</title>
+
+<script src="libs/header-attrs-2.31/header-attrs.js"></script>
+<!-- _includes/head.html  ─  injected into <head> of every page -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="author"   content="Chiranjivi Bhattarai" />
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+
+<!-- Favicon – place favicon.ico in site root -->
+<link rel="icon" href="favicon.ico" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+
+
+
+
+</head>
+
+<body>
+
+
+<!-- _includes/sidebar.html  ─  injected before <body> content on every page.
+     EDIT:  sb-avi (initials) · sb-name · sb-role · social links             -->
+
+<div class="ov" id="ov"></div>
+
+<nav class="sidebar" id="sidebar">
+
+  <!-- ── Brand ──────────────────────────────────── -->
+  <div class="sb-brand">
+    <div class="sb-avi">CB</div>         <!-- ← change to your initials -->
+    <div class="sb-name">Chiranjivi Bhattarai</div> <!-- ← change to your name     -->
+    <div class="sb-role"> researcher &amp; educator</div>
+  </div>
+
+  <!-- ── Nav links ──────────────────────────────── -->
+  <div class="nav-body">
+    <div class="nav-grp">Main</div>
+    <a href="index.html"           class="nav-link">🏠 About</a>
+    <a href="projects.html"        class="nav-link">🔬 Projects</a>
+
+    <div class="nav-grp">Teaching</div>
+    <a href="teaching-r.html"      class="nav-link">📊 Interactive R</a>
+    <a href="teaching-python.html" class="nav-link">🐍 Interactive Python</a>
+    <a href="teaching-sql.html"    class="nav-link">🗄️ Interactive SQL</a>
+  </div>
+
+  <!-- ── Social links ───────────────────────────── -->
+  <div class="sb-foot">
+    <a href="https://github.com/chiranjivibh"  class="soc" target="_blank" title="GitHub">GH</a>
+    <a href="https://twitter.com/chiranjivibh" target="_blank" class="social-btn" title="Twitter">𝕏</a>
+    <a href="https://linkedin.com/in/chiranjivibh" class="soc" target="_blank" title="LinkedIn">in</a>
+    <a href="mailto:cbhattar@dri.edu"        class="soc"                 title="Email">@</a>
+  </div>
+
+</nav>
+
+<!-- Mobile hamburger button -->
+<button class="ham" id="ham" aria-label="Open menu">
+  <span></span><span></span><span></span>
+</button>
+
+<!-- Page content wraps in <main class="main"> -->
+<main class="main">
+
+
+<h1 class="title toc-ignore">Interactive R — Chiranjivi Bhattarai</h1>
+
+
+
+<!-- ═══════════════════════════════════════════════
+     WebR runtime — R compiled to WebAssembly.
+     Loads R into the browser; no server needed.
+     Docs: https://docs.r-wasm.org/webr/latest/
+═══════════════════════════════════════════════ -->
+<script type="module">
+import { WebR } from 'https://webr.r-wasm.org/latest/webr.mjs';
+
+const webR = new WebR();
+let READY = false;
+
+function setStatus(cls, msg){
+  document.querySelectorAll('.rd').forEach(d => d.className = 'dot rd ' + cls);
+  document.querySelectorAll('.rd-txt').forEach(t => t.textContent = msg);
+}
+
+webR.init().then(() => {
+  READY = true;
+  setStatus('ok', 'R ready ✓');
+
+  document.querySelectorAll('.r-run').forEach(b => b.disabled = false);
+
+}).catch(err => {
+  setStatus('fail', 'Error: ' + err.message);
+});
+
+/* RUN R */
+window.runR = async function(id){
+  const ta  = document.getElementById('ta' + id);
+  const out = document.getElementById('ot' + id);
+  const btn = document.getElementById('bt' + id);
+  const plt = document.getElementById('pl' + id);
+
+  if(!READY){
+    out.textContent = 'R still loading...';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Running...';
+
+  out.textContent = '';
+  if(plt){ plt.innerHTML=''; plt.style.display='none'; }
+
+  try {
+    const result = await webR.evalRString(`
+      local({
+        buf <- character()
+        con <- textConnection("buf","w")
+        sink(con); sink(con, type="message")
+
+        tryCatch({
+          ${ta.value}
+        }, error=function(e){
+          cat("Error:", conditionMessage(e), "\\n")
+        })
+
+        sink(type="message"); sink()
+        close(con)
+        paste(buf, collapse="\\n")
+      })
+    `);
+
+    out.textContent = result || '(no output)';
+
+    /* LOAD PLOT */
+    try {
+      const img = await webR.FS.readFile("webr_plot.png");
+      const blob = new Blob([img], {type: "image/png"});
+      const url = URL.createObjectURL(blob);
+
+      plt.innerHTML = `<img src="${url}" style="max-width:100%">`;
+      plt.style.display = 'block';
+    } catch(e){}
+
+  } catch(err){
+    out.textContent = err.message;
+  }
+
+  btn.disabled = false;
+  btn.textContent = '▶ Run';
+};
+
+/* CLEAR */
+window.clearR = function(id){
+  const out = document.getElementById('ot' + id);
+  const plt = document.getElementById('pl' + id);
+
+  out.textContent = 'Click ▶ Run';
+  if(plt){ plt.innerHTML=''; plt.style.display='none'; }
+};
+</script>
+<header class="hero">
+<div class="eyebrow">
+Teaching — R
+</div>
+<h1>
+Interactive <em>R</em>
+</h1>
+<p>
+Run R in your browser — no installation needed. Powered by
+<strong>WebR</strong> (R → WebAssembly). Edit any example and click ▶
+Run.
+</p>
+</header>
+<div class="content">
+<!-- Status banner -->
+<div class="ib info">
+<i>ℹ️</i>
+<div>
+Status: <span class="dot load rd"></span> <span class="rd-txt"
+style="font-family:var(--mono);font-size:.71rem"> Loading WebR (~15 s
+first visit, then cached)… </span>
+</div>
+</div>
+<style>
+/* Basic dark REPL styling */
+.content { max-width: 1100px; margin: 1.2rem auto; padding: 0 1rem; }
+.py-status { display:flex; align-items:center; gap:.6rem; padding:8px 10px; border-radius:8px; background:#f1f5f9; border:1px solid #e2e8f0; margin-bottom:12px; font-family:system-ui, -apple-system, "Segoe UI", Roboto, Arial; }
+.status-dot { width:10px; height:10px; border-radius:50%; display:inline-block; }
+.status-dot.loading { background:#f59e0b; }
+.status-dot.ready { background:#10b981; }
+.status-dot.fail { background:#ef4444; }
+
+.ib.info { display:flex; align-items:center; gap:.6rem; padding:8px 10px; border-radius:8px; background:#fff; border:1px solid #e6eef6; margin-bottom:12px; }
+.ib.info i { font-style:normal; }
+
+.lesson { max-width: 1100px; margin: 1rem auto; }
+.lh { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:8px; }
+.ln { font-weight:700; color:#0f1724; margin-right:8px; }
+
+.py-repl { background:#0b0f13; border:1px solid #11161a; border-radius:8px; padding:12px; color:#e6eef6; box-shadow: 0 6px 18px rgba(2,6,10,0.35); }
+.py-repl .controls { display:flex; gap:8px; align-items:center; margin-bottom:10px; }
+.py-repl button { background:linear-gradient(180deg,#0f1724,#0b1220); color:#cfe8ff; border:1px solid #26303a; padding:6px 10px; border-radius:6px; cursor:pointer; }
+.py-repl button[disabled] { opacity:0.5; cursor:not-allowed; }
+.badge { font-size:.75rem; padding:4px 8px; border-radius:999px; background:#071022; color:#9bd3ff; border:1px solid #1f2933; }
+
+.py-repl textarea { width:100%; min-height:360px; background:#010409; color:#cfe8ff; border:1px solid #1f2933; padding:14px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace; font-size:15px; line-height:1.45; border-radius:6px; resize:vertical; box-sizing:border-box; }
+.py-out { background:#020406; color:#dbeafe; border:1px solid #11161a; padding:12px; margin-top:10px; border-radius:6px; min-height:80px; white-space:pre-wrap; }
+.plot-box { background:#010409; border:1px solid #11161a; padding:8px; margin-top:10px; border-radius:6px; text-align:center; display:none; }
+
+@media (max-width:900px){
+.py-repl textarea { min-height:220px; font-size:14px; }
+.content { padding: 0 0.6rem; }
+}
+
+/* Make the entire REPL container wider */
+.py-repl {
+  width: 100%;
+  max-width: 1200px;     /* increase width */
+  margin: 1.5rem auto;   /* center it */
+  box-sizing: border-box;
+}
+
+/* Make the code editor bigger */
+.py-repl textarea {
+  width: 100%;
+  min-height: 320px;     /* increase height */
+  font-size: 16px;       /* larger text */
+  line-height: 1.45;
+  padding: 14px;
+  border-radius: 6px;
+  resize: vertical;      /* allow user to resize */
+  background: #0b1220;
+  color: #e6eef6;
+  border: 1px solid #333;
+  box-sizing: border-box;
+}
+
+/* Make output area bigger too */
+.py-out {
+  min-height: 120px;
+  font-size: 15px;
+  padding: 14px;
+  line-height: 1.5;
+}
+
+/* Make the lesson container wider */
+.lesson, .py-lesson {
+  max-width: 1200px;
+  margin: 1.5rem auto;
+}
+
+/* Optional: make plot area wider */
+.plot-box img {
+  max-width: 100%;
+}
+.py-repl textarea {
+  width: 100%;
+  min-height: 320px;
+  font-size: 16px;
+  padding: 14px;
+  line-height: 1.45;
+  resize: vertical;
+}
+
+.lesson, .py-lesson {
+  max-width: 1200px;
+  margin: 1.5rem auto;
+}
+</style>
+<header class="hero">
+<div class="eyebrow">
+Practice — R
+</div>
+<h1>
+Interactive R Practice (WebR)
+</h1>
+<p>
+Run R in your browser — no server required. Edit the code and click Run.
+For plots, create a PNG named <code>webr_plot.png</code> (example
+below).
+</p>
+</header>
+<div class="content">
+<!-- Practice block -->
+<div class="lesson">
+<div class="lh">
+<div>
+<div class="ln">
+PRACTICE
+</div>
+<h3>
+Practice: Basic R and Plot
+</h3>
+</div>
+<span class="tag practice">Exercise</span>
+</div>
+<div class="lb">
+<p style="margin:0 0 8px 0;color:#94a3b8">
+Edit the R code and click Run. To produce a plot, create a PNG file
+named <code>webr_plot.png</code> in your R code.
+</p>
+<div class="py-repl">
+<div class="controls">
+<button type="button" onclick="clearR(&#39;practice2&#39;)">
+Clear
+</button>
+<button class="r-run" id="btpractice2" type="button" onclick="runR(&#39;practice2&#39;)" disabled>
+▶ Run
+</button>
+<div class="controls-right">
+<button id="cppractice2" class="small-btn" onclick="copyCode(&#39;practice2&#39;)">
+Copy
+</button>
+<button class="small-btn" onclick="localStorage.removeItem(window.autosaveKey(&#39;practice2&#39;)); window.loadEditor(&#39;practice2&#39;);">
+Reset
+</button>
+</div>
+<span class="badge" style="margin-left:8px">R (WebR)</span>
+</div>
+<div class="editor-wrap">
+<div id="gpractice2" class="gutter">
+
+</div>
+<textarea id="tapractice2" class="editor" spellcheck="false" style="min-height:420px;" data-default="
+# Example R practice code
+x <- seq(0, 2*pi, length.out = 200)
+y <- sin(2*x) * exp(-0.2*x)
+cat(sprintf(&quot;x range: %.2f to %.2f\n&quot;, min(x), max(x)))
+cat(sprintf(&quot;y mean: %.4f\n&quot;, mean(y)))
+png(&quot;webr_plot.png&quot;, width = 800, height = 300)
+par(bg = &quot;black&quot;, col.axis = &quot;white&quot;, col.lab = &quot;white&quot;, col.main = &quot;white&quot;)
+plot(x, y, type = &quot;l&quot;, col = &quot;#58a6ff&quot;, lwd = 2, main = &quot;Damped sine wave&quot;)
+dev.off()
+">
+# Example R practice code
+x <- seq(0, 2*pi, length.out = 200)
+y <- sin(2*x) * exp(-0.2*x)
+cat(sprintf("x range: %.2f to %.2f\n", min(x), max(x)))
+cat(sprintf("y mean: %.4f\n", mean(y)))
+png("webr_plot.png", width = 800, height = 300)
+par(bg = "black", col.axis = "white", col.lab = "white", col.main = "white")
+plot(x, y, type = "l", col = "#58a6ff", lwd = 2, main = "Damped sine wave")
+dev.off()
+</textarea>
+</div>
+<div id="otpractice2" class="py-out idle">
+Click ▶ Run to execute
+</div>
+<div id="plpractice2" class="plot-box">
+
+</div>
+</div>
+</div>
+</div>
+<div class="lesson">
+<div class="lh">
+<div>
+<div class="ln">
+PRACTICE
+</div>
+<h3>
+Practice: Basic R and Plot
+</h3>
+</div>
+<span class="tag practice">Exercise</span>
+</div>
+<div class="lb">
+<p style="margin:0 0 8px 0;color:#94a3b8">
+Edit the R code and click Run. To produce a plot, create a PNG file
+named <code>webr_plot.png</code> in your R code.
+</p>
+<div class="py-repl">
+<div class="controls">
+<button type="button" onclick="clearR(&#39;practice2&#39;)">
+Clear
+</button>
+<button class="r-run" id="btpractice2" type="button" onclick="runR(&#39;practice2&#39;)" disabled>
+▶ Run
+</button>
+<div class="controls-right">
+<button id="cppractice2" class="small-btn" onclick="copyCode(&#39;practice2&#39;)">
+Copy
+</button>
+<button class="small-btn" onclick="localStorage.removeItem(window.autosaveKey(&#39;practice2&#39;)); window.loadEditor(&#39;practice2&#39;);">
+Reset
+</button>
+</div>
+<span class="badge" style="margin-left:8px">R (WebR)</span>
+</div>
+<div class="editor-wrap">
+<div id="gpractice2" class="gutter">
+
+</div>
+<textarea id="tapractice2" class="editor" spellcheck="false" style="min-height:420px;" data-default="
+# Example R practice code
+x <- seq(0, 2*pi, length.out = 200)
+y <- sin(2*x) * exp(-0.2*x)
+cat(sprintf(&quot;x range: %.2f to %.2f\n&quot;, min(x), max(x)))
+cat(sprintf(&quot;y mean: %.4f\n&quot;, mean(y)))
+png(&quot;webr_plot.png&quot;, width = 800, height = 300)
+par(bg = &quot;black&quot;, col.axis = &quot;white&quot;, col.lab = &quot;white&quot;, col.main = &quot;white&quot;)
+plot(x, y, type = &quot;l&quot;, col = &quot;#58a6ff&quot;, lwd = 2, main = &quot;Damped sine wave&quot;)
+dev.off()
+">
+# Example R practice code
+x <- seq(0, 2*pi, length.out = 200)
+y <- sin(2*x) * exp(-0.2*x)
+cat(sprintf("x range: %.2f to %.2f\n", min(x), max(x)))
+cat(sprintf("y mean: %.4f\n", mean(y)))
+png("webr_plot.png", width = 800, height = 300)
+par(bg = "black", col.axis = "white", col.lab = "white", col.main = "white")
+plot(x, y, type = "l", col = "#58a6ff", lwd = 2, main = "Damped sine wave")
+dev.off()
+</textarea>
+</div>
+<div id="otpractice2" class="py-out idle">
+Click ▶ Run to execute
+</div>
+<div id="plpractice2" class="plot-box">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- _includes/footer.html  ─  injected after body content on every page -->
+
+</main><!-- /.main -->
+
+<script src="js/nav.js"></script>
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
