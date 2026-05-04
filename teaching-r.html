@@ -14,7 +14,7 @@
 
 <title>Interactive R — Chiranjivi Bhattarai</title>
 
-<script src="libs/header-attrs-2.31/header-attrs.js"></script>
+<script src="libs/header-attrs-2.29/header-attrs.js"></script>
 <!-- _includes/head.html  ─  injected into <head> of every page -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="author"   content="Chiranjivi Bhattarai" />
@@ -81,7 +81,6 @@
   <!-- ── Social links ───────────────────────────── -->
   <div class="sb-foot">
     <a href="https://github.com/chiranjivibh"  class="soc" target="_blank" title="GitHub">GH</a>
-    <a href="https://twitter.com/chiranjivibh" target="_blank" class="social-btn" title="Twitter">𝕏</a>
     <a href="https://linkedin.com/in/chiranjivibh" class="soc" target="_blank" title="LinkedIn">in</a>
     <a href="mailto:cbhattar@dri.edu"        class="soc"                 title="Email">@</a>
   </div>
@@ -336,27 +335,27 @@ named <code>webr_plot.png</code> in your R code.
 </p>
 <div class="py-repl">
 <div class="controls">
-<button type="button" onclick="clearR(&#39;practice2&#39;)">
+<button type="button" onclick="clearR(&#39;practice1&#39;)">
 Clear
 </button>
-<button class="r-run" id="btpractice2" type="button" onclick="runR(&#39;practice2&#39;)" disabled>
+<button class="r-run" id="btpractice1" type="button" onclick="runR(&#39;practice1&#39;)" disabled>
 ▶ Run
 </button>
 <div class="controls-right">
-<button id="cppractice2" class="small-btn" onclick="copyCode(&#39;practice2&#39;)">
+<button id="cppractice1" class="small-btn" onclick="copyCode(&#39;practice1&#39;)">
 Copy
 </button>
-<button class="small-btn" onclick="localStorage.removeItem(window.autosaveKey(&#39;practice2&#39;)); window.loadEditor(&#39;practice2&#39;);">
+<button class="small-btn" onclick="localStorage.removeItem(window.autosaveKey(&#39;practice1&#39;)); window.loadEditor(&#39;practice1&#39;);">
 Reset
 </button>
 </div>
 <span class="badge" style="margin-left:8px">R (WebR)</span>
 </div>
 <div class="editor-wrap">
-<div id="gpractice2" class="gutter">
+<div id="gpractice1" class="gutter">
 
 </div>
-<textarea id="tapractice2" class="editor" spellcheck="false" style="min-height:420px;" data-default="
+<textarea id="tapractice1" class="editor" spellcheck="false" style="min-height:420px;" data-default="
 # Example R practice code
 x <- seq(0, 2*pi, length.out = 200)
 y <- sin(2*x) * exp(-0.2*x)
@@ -378,10 +377,10 @@ plot(x, y, type = "l", col = "#58a6ff", lwd = 2, main = "Damped sine wave")
 dev.off()
 </textarea>
 </div>
-<div id="otpractice2" class="py-out idle">
+<div id="otpractice1" class="py-out idle">
 Click ▶ Run to execute
 </div>
-<div id="plpractice2" class="plot-box">
+<div id="plpractice1" class="plot-box">
 
 </div>
 </div>
@@ -428,7 +427,7 @@ Reset
 </div>
 <textarea id="tapractice2" class="editor" spellcheck="false" style="min-height:420px;" data-default="
 # Example R practice code
-x <- seq(0, 2*pi, length.out = 200)
+x <- seq(0, 4*pi, length.out = 200)
 y <- sin(2*x) * exp(-0.2*x)
 cat(sprintf(&quot;x range: %.2f to %.2f\n&quot;, min(x), max(x)))
 cat(sprintf(&quot;y mean: %.4f\n&quot;, mean(y)))
@@ -438,7 +437,7 @@ plot(x, y, type = &quot;l&quot;, col = &quot;#58a6ff&quot;, lwd = 2, main = &quo
 dev.off()
 ">
 # Example R practice code
-x <- seq(0, 2*pi, length.out = 200)
+x <- seq(0, 4*pi, length.out = 200)
 y <- sin(2*x) * exp(-0.2*x)
 cat(sprintf("x range: %.2f to %.2f\n", min(x), max(x)))
 cat(sprintf("y mean: %.4f\n", mean(y)))
