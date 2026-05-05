@@ -182,7 +182,6 @@ window.runR = async function(id){
   btn.disabled = false;
   btn.textContent = '▶ Run';
 };
-
 /* CLEAR */
 window.clearR = function(id){
   const out = document.getElementById('ot' + id);
@@ -216,36 +215,6 @@ first visit, then cached)… </span>
 </div>
 </div>
 <style>
-/* Basic dark REPL styling */
-.content { max-width: 1100px; margin: 1.2rem auto; padding: 0 1rem; }
-.py-status { display:flex; align-items:center; gap:.6rem; padding:8px 10px; border-radius:8px; background:#f1f5f9; border:1px solid #e2e8f0; margin-bottom:12px; font-family:system-ui, -apple-system, "Segoe UI", Roboto, Arial; }
-.status-dot { width:10px; height:10px; border-radius:50%; display:inline-block; }
-.status-dot.loading { background:#f59e0b; }
-.status-dot.ready { background:#10b981; }
-.status-dot.fail { background:#ef4444; }
-
-.ib.info { display:flex; align-items:center; gap:.6rem; padding:8px 10px; border-radius:8px; background:#fff; border:1px solid #e6eef6; margin-bottom:12px; }
-.ib.info i { font-style:normal; }
-
-.lesson { max-width: 1100px; margin: 1rem auto; }
-.lh { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:8px; }
-.ln { font-weight:700; color:#0f1724; margin-right:8px; }
-
-.py-repl { background:#0b0f13; border:1px solid #11161a; border-radius:8px; padding:12px; color:#e6eef6; box-shadow: 0 6px 18px rgba(2,6,10,0.35); }
-.py-repl .controls { display:flex; gap:8px; align-items:center; margin-bottom:10px; }
-.py-repl button { background:linear-gradient(180deg,#0f1724,#0b1220); color:#cfe8ff; border:1px solid #26303a; padding:6px 10px; border-radius:6px; cursor:pointer; }
-.py-repl button[disabled] { opacity:0.5; cursor:not-allowed; }
-.badge { font-size:.75rem; padding:4px 8px; border-radius:999px; background:#071022; color:#9bd3ff; border:1px solid #1f2933; }
-
-.py-repl textarea { width:100%; min-height:360px; background:#010409; color:#cfe8ff; border:1px solid #1f2933; padding:14px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace; font-size:15px; line-height:1.45; border-radius:6px; resize:vertical; box-sizing:border-box; }
-.py-out { background:#020406; color:#dbeafe; border:1px solid #11161a; padding:12px; margin-top:10px; border-radius:6px; min-height:80px; white-space:pre-wrap; }
-.plot-box { background:#010409; border:1px solid #11161a; padding:8px; margin-top:10px; border-radius:6px; text-align:center; display:none; }
-
-@media (max-width:900px){
-.py-repl textarea { min-height:220px; font-size:14px; }
-.content { padding: 0 0.6rem; }
-}
-
 /* Make the entire REPL container wider */
 .py-repl {
   width: 100%;
@@ -299,6 +268,35 @@ first visit, then cached)… </span>
 .lesson, .py-lesson {
   max-width: 1200px;
   margin: 1.5rem auto;
+}
+/* Basic dark REPL styling */
+.content { max-width: 1100px; margin: 1.2rem auto; padding: 0 1rem; }
+.py-status { display:flex; align-items:center; gap:.6rem; padding:8px 10px; border-radius:8px; background:#f1f5f9; border:1px solid #e2e8f0; margin-bottom:12px; font-family:system-ui, -apple-system, "Segoe UI", Roboto, Arial; }
+.status-dot { width:10px; height:10px; border-radius:50%; display:inline-block; }
+.status-dot.loading { background:#f59e0b; }
+.status-dot.ready { background:#10b981; }
+.status-dot.fail { background:#ef4444; }
+
+.ib.info { display:flex; align-items:center; gap:.6rem; padding:8px 10px; border-radius:8px; background:#fff; border:1px solid #e6eef6; margin-bottom:12px; }
+.ib.info i { font-style:normal; }
+
+.lesson { max-width: 1100px; margin: 1rem auto; }
+.lh { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:8px; }
+.ln { font-weight:700; color:#0f1724; margin-right:8px; }
+
+.py-repl { background:#0b0f13; border:1px solid #11161a; border-radius:8px; padding:12px; color:#e6eef6; box-shadow: 0 6px 18px rgba(2,6,10,0.35); }
+.py-repl .controls { display:flex; gap:8px; align-items:center; margin-bottom:10px; }
+.py-repl button { background:linear-gradient(180deg,#0f1724,#0b1220); color:#cfe8ff; border:1px solid #26303a; padding:6px 10px; border-radius:6px; cursor:pointer; }
+.py-repl button[disabled] { opacity:0.5; cursor:not-allowed; }
+.badge { font-size:.75rem; padding:4px 8px; border-radius:999px; background:#071022; color:#9bd3ff; border:1px solid #1f2933; }
+
+.py-repl textarea { width:100%; min-height:360px; background:#010409; color:#cfe8ff; border:1px solid #1f2933; padding:14px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace; font-size:15px; line-height:1.45; border-radius:6px; resize:vertical; box-sizing:border-box; }
+.py-out { background:#020406; color:#dbeafe; border:1px solid #11161a; padding:12px; margin-top:10px; border-radius:6px; min-height:80px; white-space:pre-wrap; }
+.plot-box { background:#010409; border:1px solid #11161a; padding:8px; margin-top:10px; border-radius:6px; text-align:center; display:none; }
+
+@media (max-width:900px){
+.py-repl textarea { min-height:220px; font-size:14px; }
+.content { padding: 0 0.6rem; }
 }
 </style>
 <header class="hero">
@@ -451,6 +449,506 @@ dev.off()
 Click ▶ Run to execute
 </div>
 <div id="plpractice2" class="plot-box">
+
+</div>
+</div>
+</div>
+</div>
+<div class="lesson">
+<div class="lh">
+<div>
+<div class="ln">
+PRACTICE
+</div>
+<h3>
+Practice: Basic R and Plot
+</h3>
+</div>
+<span class="tag practice">Exercise</span>
+</div>
+<div class="lb">
+<p style="margin:0 0 8px 0;color:#94a3b8">
+Edit the R code and click Run. To produce a plot, create a PNG file
+named <code>webr_plot.png</code> in your R code.
+</p>
+<div class="py-repl">
+<div class="controls">
+<button type="button" onclick="clearR(&#39;practice3&#39;)">
+Clear
+</button>
+<button class="r-run" id="btpractice3" type="button" onclick="runR(&#39;practice3&#39;)" disabled>
+▶ Run
+</button>
+<div class="controls-right">
+<button id="cppractice3" class="small-btn" onclick="copyCode(&#39;practice3&#39;)">
+Copy
+</button>
+<button class="small-btn" onclick="localStorage.removeItem(window.autosaveKey(&#39;practice3&#39;)); window.loadEditor(&#39;practice3&#39;);">
+Reset
+</button>
+</div>
+<span class="badge" style="margin-left:8px">R (WebR)</span>
+</div>
+<div class="editor-wrap">
+<div id="gpractice3" class="gutter">
+
+</div>
+<textarea id="tapractice3" class="editor" spellcheck="false" style="min-height:420px;" data-default="
+# Example R practice code
+set.seed(99)
+groupA <- rnorm(100, mean = 5, sd = 1.5)
+groupB <- rnorm(100, mean = 7, sd = 2.0)
+groupC <- rnorm(100, mean = 6, sd = 1.0)
+cat(sprintf(&quot;Group A median: %.4f
+&quot;, median(groupA)))
+cat(sprintf(&quot;Group B median: %.4f
+&quot;, median(groupB)))
+cat(sprintf(&quot;Group C median: %.4f
+&quot;, median(groupC)))
+
+png(&quot;webr_plot.png&quot;, width = 800, height = 300)
+par(bg = &quot;black&quot;, col.axis = &quot;white&quot;, col.lab = &quot;white&quot;, col.main = &quot;white&quot;)
+boxplot(groupA, groupB, groupC,
+        names = c(&quot;Group A&quot;, &quot;Group B&quot;, &quot;Group C&quot;),
+        col = c(&quot;#58a6ff&quot;, &quot;#f78166&quot;, &quot;#3fb950&quot;),
+        border = &quot;white&quot;, main = &quot;Group Comparisons&quot;, ylab = &quot;Value&quot;)
+dev.off()
+">
+# Example R practice code
+set.seed(99)
+groupA <- rnorm(100, mean = 5, sd = 1.5)
+groupB <- rnorm(100, mean = 7, sd = 2.0)
+groupC <- rnorm(100, mean = 6, sd = 1.0)
+cat(sprintf("Group A median: %.4f
+", median(groupA)))
+cat(sprintf("Group B median: %.4f
+", median(groupB)))
+cat(sprintf("Group C median: %.4f
+", median(groupC)))
+
+png("webr_plot.png", width = 800, height = 300)
+par(bg = "black", col.axis = "white", col.lab = "white", col.main = "white")
+boxplot(groupA, groupB, groupC,
+        names = c("Group A", "Group B", "Group C"),
+        col = c("#58a6ff", "#f78166", "#3fb950"),
+        border = "white", main = "Group Comparisons", ylab = "Value")
+dev.off()
+</textarea>
+</div>
+<div id="otpractice3" class="py-out idle">
+Click ▶ Run to execute
+</div>
+<div id="plpractice3" class="plot-box">
+
+</div>
+</div>
+</div>
+</div>
+<div class="lesson">
+<div class="lh">
+<div>
+<div class="ln">
+PRACTICE
+</div>
+<h3>
+Practice: Histogram of Random Normal Data
+</h3>
+</div>
+<span class="tag practice">Exercise</span>
+</div>
+<div class="lb">
+<p style="margin:0 0 8px 0;color:#94a3b8">
+Edit the R code and click Run. To produce a plot, create a PNG file
+named <code>webr_plot.png</code> in your R code.
+</p>
+<div class="py-repl">
+<div class="controls">
+<button type="button" onclick="clearR(&#39;practice4&#39;)">
+Clear
+</button>
+<button class="r-run" id="btpractice4" type="button" onclick="runR(&#39;practice4&#39;)" disabled>
+▶ Run
+</button>
+<div class="controls-right">
+<button id="cppractice4" class="small-btn" onclick="copyCode(&#39;practice4&#39;)">
+Copy
+</button>
+<button class="small-btn" onclick="localStorage.removeItem(window.autosaveKey(&#39;practice4&#39;)); window.loadEditor(&#39;practice4&#39;);">
+Reset
+</button>
+</div>
+<span class="badge" style="margin-left:8px">R (WebR)</span>
+</div>
+<div class="editor-wrap">
+<div id="gpractice4" class="gutter">
+
+</div>
+<textarea id="tapractice4" class="editor" spellcheck="false" style="min-height:420px;" data-default="
+# Histogram of Random Normal Data
+set.seed(42)
+data <- rnorm(500, mean = 0, sd = 1)
+cat(sprintf(&quot;Mean: %.4f
+&quot;, mean(data)))
+cat(sprintf(&quot;SD:   %.4f
+&quot;, sd(data)))
+png(&quot;webr_plot.png&quot;, width = 800, height = 300)
+par(bg = &quot;black&quot;, col.axis = &quot;white&quot;, col.lab = &quot;white&quot;, col.main = &quot;white&quot;)
+hist(data, col = &quot;#58a6ff&quot;, border = &quot;white&quot;, main = &quot;Normal Distribution&quot;, xlab = &quot;Value&quot;)
+dev.off()
+">
+# Histogram of Random Normal Data
+set.seed(42)
+data <- rnorm(500, mean = 0, sd = 1)
+cat(sprintf("Mean: %.4f
+", mean(data)))
+cat(sprintf("SD:   %.4f
+", sd(data)))
+png("webr_plot.png", width = 800, height = 300)
+par(bg = "black", col.axis = "white", col.lab = "white", col.main = "white")
+hist(data, col = "#58a6ff", border = "white", main = "Normal Distribution", xlab = "Value")
+dev.off()
+</textarea>
+</div>
+<div id="otpractice4" class="py-out idle">
+Click ▶ Run to execute
+</div>
+<div id="plpractice4" class="plot-box">
+
+</div>
+</div>
+</div>
+</div>
+<div class="lesson">
+<div class="lh">
+<div>
+<div class="ln">
+PRACTICE
+</div>
+<h3>
+Practice: Scatter Plot with Linear Trend
+</h3>
+</div>
+<span class="tag practice">Exercise</span>
+</div>
+<div class="lb">
+<p style="margin:0 0 8px 0;color:#94a3b8">
+Edit the R code and click Run. To produce a plot, create a PNG file
+named <code>webr_plot.png</code> in your R code.
+</p>
+<div class="py-repl">
+<div class="controls">
+<button type="button" onclick="clearR(&#39;practice5&#39;)">
+Clear
+</button>
+<button class="r-run" id="btpractice5" type="button" onclick="runR(&#39;practice5&#39;)" disabled>
+▶ Run
+</button>
+<div class="controls-right">
+<button id="cppractice5" class="small-btn" onclick="copyCode(&#39;practice5&#39;)">
+Copy
+</button>
+<button class="small-btn" onclick="localStorage.removeItem(window.autosaveKey(&#39;practice5&#39;)); window.loadEditor(&#39;practice5&#39;);">
+Reset
+</button>
+</div>
+<span class="badge" style="margin-left:8px">R (WebR)</span>
+</div>
+<div class="editor-wrap">
+<div id="gpractice5" class="gutter">
+
+</div>
+<textarea id="tapractice5" class="editor" spellcheck="false" style="min-height:420px;" data-default="
+# Scatter Plot with Linear Trend
+set.seed(7)
+x <- 1:50
+y <- 2 * x + rnorm(50, sd = 10)
+fit <- lm(y ~ x)
+cat(sprintf(&quot;Slope:     %.4f
+&quot;, coef(fit)[2]))
+cat(sprintf(&quot;Intercept: %.4f
+&quot;, coef(fit)[1]))
+png(&quot;webr_plot.png&quot;, width = 800, height = 300)
+par(bg = &quot;black&quot;, col.axis = &quot;white&quot;, col.lab = &quot;white&quot;, col.main = &quot;white&quot;)
+plot(x, y, col = &quot;#f78166&quot;, pch = 16, main = &quot;Scatter + Trend Line&quot;, xlab = &quot;x&quot;, ylab = &quot;y&quot;)
+abline(fit, col = &quot;#58a6ff&quot;, lwd = 2)
+dev.off()
+">
+# Scatter Plot with Linear Trend
+set.seed(7)
+x <- 1:50
+y <- 2 * x + rnorm(50, sd = 10)
+fit <- lm(y ~ x)
+cat(sprintf("Slope:     %.4f
+", coef(fit)[2]))
+cat(sprintf("Intercept: %.4f
+", coef(fit)[1]))
+png("webr_plot.png", width = 800, height = 300)
+par(bg = "black", col.axis = "white", col.lab = "white", col.main = "white")
+plot(x, y, col = "#f78166", pch = 16, main = "Scatter + Trend Line", xlab = "x", ylab = "y")
+abline(fit, col = "#58a6ff", lwd = 2)
+dev.off()
+</textarea>
+</div>
+<div id="otpractice5" class="py-out idle">
+Click ▶ Run to execute
+</div>
+<div id="plpractice5" class="plot-box">
+
+</div>
+</div>
+</div>
+</div>
+<div class="lesson">
+<div class="lh">
+<div>
+<div class="ln">
+PRACTICE
+</div>
+<h3>
+Practice: Bar Chart of Category Counts
+</h3>
+</div>
+<span class="tag practice">Exercise</span>
+</div>
+<div class="lb">
+<p style="margin:0 0 8px 0;color:#94a3b8">
+Edit the R code and click Run. To produce a plot, create a PNG file
+named <code>webr_plot.png</code> in your R code.
+</p>
+<div class="py-repl">
+<div class="controls">
+<button type="button" onclick="clearR(&#39;practice6&#39;)">
+Clear
+</button>
+<button class="r-run" id="btpractice6" type="button" onclick="runR(&#39;practice6&#39;)" disabled>
+▶ Run
+</button>
+<div class="controls-right">
+<button id="cppractice6" class="small-btn" onclick="copyCode(&#39;practice6&#39;)">
+Copy
+</button>
+<button class="small-btn" onclick="localStorage.removeItem(window.autosaveKey(&#39;practice6&#39;)); window.loadEditor(&#39;practice6&#39;);">
+Reset
+</button>
+</div>
+<span class="badge" style="margin-left:8px">R (WebR)</span>
+</div>
+<div class="editor-wrap">
+<div id="gpractice6" class="gutter">
+
+</div>
+<textarea id="tapractice6" class="editor" spellcheck="false" style="min-height:420px;" data-default="
+# Bar Chart of Category Counts
+fruits <- c(&quot;Apple&quot;, &quot;Banana&quot;, &quot;Cherry&quot;, &quot;Date&quot;, &quot;Elderberry&quot;)
+counts <- c(23, 45, 12, 34, 18)
+cat(&quot;Counts:
+&quot;)
+for (i in seq_along(fruits)) cat(sprintf(&quot;  %s: %d
+&quot;, fruits[i], counts[i]))
+png(&quot;webr_plot.png&quot;, width = 800, height = 300)
+par(bg = &quot;black&quot;, col.axis = &quot;white&quot;, col.lab = &quot;white&quot;, col.main = &quot;white&quot;)
+barplot(counts, names.arg = fruits, col = &quot;#3fb950&quot;, border = &quot;white&quot;,
+        main = &quot;Fruit Counts&quot;, ylab = &quot;Count&quot;)
+dev.off()
+">
+# Bar Chart of Category Counts
+fruits <- c("Apple", "Banana", "Cherry", "Date", "Elderberry")
+counts <- c(23, 45, 12, 34, 18)
+cat("Counts:
+")
+for (i in seq_along(fruits)) cat(sprintf("  %s: %d
+", fruits[i], counts[i]))
+png("webr_plot.png", width = 800, height = 300)
+par(bg = "black", col.axis = "white", col.lab = "white", col.main = "white")
+barplot(counts, names.arg = fruits, col = "#3fb950", border = "white",
+        main = "Fruit Counts", ylab = "Count")
+dev.off()
+</textarea>
+</div>
+<div id="otpractice6" class="py-out idle">
+Click ▶ Run to execute
+</div>
+<div id="plpractice6" class="plot-box">
+
+</div>
+</div>
+</div>
+</div>
+<div class="lesson">
+<div class="lh">
+<div>
+<div class="ln">
+PRACTICE
+</div>
+<h3>
+Practice: Multiple Lines (Sine Harmonics)
+</h3>
+</div>
+<span class="tag practice">Exercise</span>
+</div>
+<div class="lb">
+<p style="margin:0 0 8px 0;color:#94a3b8">
+Edit the R code and click Run. To produce a plot, create a PNG file
+named <code>webr_plot.png</code> in your R code.
+</p>
+<div class="py-repl">
+<div class="controls">
+<button type="button" onclick="clearR(&#39;practice7&#39;)">
+Clear
+</button>
+<button class="r-run" id="btpractice7" type="button" onclick="runR(&#39;practice7&#39;)" disabled>
+▶ Run
+</button>
+<div class="controls-right">
+<button id="cppractice7" class="small-btn" onclick="copyCode(&#39;practice7&#39;)">
+Copy
+</button>
+<button class="small-btn" onclick="localStorage.removeItem(window.autosaveKey(&#39;practice7&#39;)); window.loadEditor(&#39;practice7&#39;);">
+Reset
+</button>
+</div>
+<span class="badge" style="margin-left:8px">R (WebR)</span>
+</div>
+<div class="editor-wrap">
+<div id="gpractice7" class="gutter">
+
+</div>
+<textarea id="tapractice7" class="editor" spellcheck="false" style="min-height:420px;" data-default="
+# Multiple Lines (Sine Harmonics)
+x <- seq(0, 2 * pi, length.out = 300)
+y1 <- sin(x)
+y2 <- sin(2 * x)
+y3 <- sin(3 * x)
+cat(sprintf(&quot;Max |y1|: %.4f
+&quot;, max(abs(y1))))
+cat(sprintf(&quot;Max |y2|: %.4f
+&quot;, max(abs(y2))))
+cat(sprintf(&quot;Max |y3|: %.4f
+&quot;, max(abs(y3))))
+png(&quot;webr_plot.png&quot;, width = 800, height = 300)
+par(bg = &quot;black&quot;, col.axis = &quot;white&quot;, col.lab = &quot;white&quot;, col.main = &quot;white&quot;)
+plot(x, y1, type = &quot;l&quot;, col = &quot;#58a6ff&quot;, lwd = 2,
+     main = &quot;Sine Harmonics&quot;, xlab = &quot;x&quot;, ylab = &quot;y&quot;, ylim = c(-1, 1))
+lines(x, y2, col = &quot;#f78166&quot;, lwd = 2)
+lines(x, y3, col = &quot;#3fb950&quot;, lwd = 2)
+legend(&quot;topright&quot;, legend = c(&quot;sin(x)&quot;, &quot;sin(2x)&quot;, &quot;sin(3x)&quot;),
+       col = c(&quot;#58a6ff&quot;, &quot;#f78166&quot;, &quot;#3fb950&quot;), lwd = 2, bg = &quot;black&quot;, text.col = &quot;white&quot;)
+dev.off()
+">
+# Multiple Lines (Sine Harmonics)
+x <- seq(0, 2 * pi, length.out = 300)
+y1 <- sin(x)
+y2 <- sin(2 * x)
+y3 <- sin(3 * x)
+cat(sprintf("Max |y1|: %.4f
+", max(abs(y1))))
+cat(sprintf("Max |y2|: %.4f
+", max(abs(y2))))
+cat(sprintf("Max |y3|: %.4f
+", max(abs(y3))))
+png("webr_plot.png", width = 800, height = 300)
+par(bg = "black", col.axis = "white", col.lab = "white", col.main = "white")
+plot(x, y1, type = "l", col = "#58a6ff", lwd = 2,
+     main = "Sine Harmonics", xlab = "x", ylab = "y", ylim = c(-1, 1))
+lines(x, y2, col = "#f78166", lwd = 2)
+lines(x, y3, col = "#3fb950", lwd = 2)
+legend("topright", legend = c("sin(x)", "sin(2x)", "sin(3x)"),
+       col = c("#58a6ff", "#f78166", "#3fb950"), lwd = 2, bg = "black", text.col = "white")
+dev.off()
+</textarea>
+</div>
+<div id="otpractice7" class="py-out idle">
+Click ▶ Run to execute
+</div>
+<div id="plpractice7" class="plot-box">
+
+</div>
+</div>
+</div>
+</div>
+<div class="lesson">
+<div class="lh">
+<div>
+<div class="ln">
+PRACTICE
+</div>
+<h3>
+Practice: Box Plot of Group Comparisons
+</h3>
+</div>
+<span class="tag practice">Exercise</span>
+</div>
+<div class="lb">
+<p style="margin:0 0 8px 0;color:#94a3b8">
+Edit the R code and click Run. To produce a plot, create a PNG file
+named <code>webr_plot.png</code> in your R code.
+</p>
+<div class="py-repl">
+<div class="controls">
+<button type="button" onclick="clearR(&#39;practice8&#39;)">
+Clear
+</button>
+<button class="r-run" id="btpractice8" type="button" onclick="runR(&#39;practice8&#39;)" disabled>
+▶ Run
+</button>
+<div class="controls-right">
+<button id="cppractice8" class="small-btn" onclick="copyCode(&#39;practice8&#39;)">
+Copy
+</button>
+<button class="small-btn" onclick="localStorage.removeItem(window.autosaveKey(&#39;practice8&#39;)); window.loadEditor(&#39;practice8&#39;);">
+Reset
+</button>
+</div>
+<span class="badge" style="margin-left:8px">R (WebR)</span>
+</div>
+<div class="editor-wrap">
+<div id="gpractice8" class="gutter">
+
+</div>
+<textarea id="tapractice8" class="editor" spellcheck="false" style="min-height:420px;" data-default="
+# Box Plot of Group Comparisons
+set.seed(99)
+groupA <- rnorm(100, mean = 5, sd = 1.5)
+groupB <- rnorm(100, mean = 7, sd = 2.0)
+groupC <- rnorm(100, mean = 6, sd = 1.0)
+cat(sprintf(&quot;Group A median: %.4f
+&quot;, median(groupA)))
+cat(sprintf(&quot;Group B median: %.4f
+&quot;, median(groupB)))
+cat(sprintf(&quot;Group C median: %.4f
+&quot;, median(groupC)))
+png(&quot;webr_plot.png&quot;, width = 800, height = 300)
+par(bg = &quot;black&quot;, col.axis = &quot;white&quot;, col.lab = &quot;white&quot;, col.main = &quot;white&quot;)
+boxplot(groupA, groupB, groupC,
+        names = c(&quot;Group A&quot;, &quot;Group B&quot;, &quot;Group C&quot;),
+        col = c(&quot;#58a6ff&quot;, &quot;#f78166&quot;, &quot;#3fb950&quot;),
+        border = &quot;white&quot;, main = &quot;Group Comparisons&quot;, ylab = &quot;Value&quot;)
+dev.off()
+">
+# Box Plot of Group Comparisons
+set.seed(99)
+groupA <- rnorm(100, mean = 5, sd = 1.5)
+groupB <- rnorm(100, mean = 7, sd = 2.0)
+groupC <- rnorm(100, mean = 6, sd = 1.0)
+cat(sprintf("Group A median: %.4f
+", median(groupA)))
+cat(sprintf("Group B median: %.4f
+", median(groupB)))
+cat(sprintf("Group C median: %.4f
+", median(groupC)))
+png("webr_plot.png", width = 800, height = 300)
+par(bg = "black", col.axis = "white", col.lab = "white", col.main = "white")
+boxplot(groupA, groupB, groupC,
+        names = c("Group A", "Group B", "Group C"),
+        col = c("#58a6ff", "#f78166", "#3fb950"),
+        border = "white", main = "Group Comparisons", ylab = "Value")
+dev.off()
+</textarea>
+</div>
+<div id="otpractice8" class="py-out idle">
+Click ▶ Run to execute
+</div>
+<div id="plpractice8" class="plot-box">
 
 </div>
 </div>
