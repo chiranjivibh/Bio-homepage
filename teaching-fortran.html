@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Interactive Fortran — Chiranjivi Bhattarai</title>
+
+<script src="libs/header-attrs-2.29/header-attrs.js"></script>
+<!-- _includes/head.html  ─  injected into <head> of every page -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="author"   content="Chiranjivi Bhattarai" />
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+
+<!-- Favicon – place favicon.ico in site root -->
+<link rel="icon" href="favicon.ico" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+
+
+
+
+</head>
+
+<body>
+
+
+<!-- _includes/sidebar.html  ─  injected before <body> content on every page.
+     EDIT:  sb-avi (initials) · sb-name · sb-role · social links             -->
+
+<div class="ov" id="ov"></div>
+
+<nav class="sidebar" id="sidebar">
+
+  <!-- ── Brand ──────────────────────────────────── -->
+  <div class="sb-brand">
+    <div class="sb-avi">CB</div>         <!-- ← change to your initials -->
+    <div class="sb-name">Chiranjivi Bhattarai</div> <!-- ← change to your name     -->
+    <div class="sb-role"> researcher &amp; educator</div>
+  </div>
+
+  <!-- ── Nav links ──────────────────────────────── -->
+  <div class="nav-body">
+    <div class="nav-grp">Main</div>
+    <a href="index.html"           class="nav-link">🏠 About</a>
+    <a href="projects.html"        class="nav-link">🔬 Projects</a>
+
+    <div class="nav-grp">Teaching</div>
+    <a href="teaching-r.html"      class="nav-link">📊 Interactive R</a>
+    <a href="teaching-python.html" class="nav-link">🐍 Interactive Python</a>
+    <a href="teaching-sql.html"    class="nav-link"> 🗄️ Interactive SQL</a>
+    <a href="teaching-matlab.html"  class="nav-link"> 📐 MATLAB / Octave</a>
+    <a href="teaching-fortran.html" class="nav-link"> ⚡ Fortran</a>
+
+    <div class="nav-grp">Dashboards</div>
+    <a href="teaching-powerbi.html" class="nav-link">📊 Power BI</a>
+  </div>
+
+  <!-- ── Social links ───────────────────────────── -->
+  <div class="sb-foot">
+    <a href="https://github.com/chiranjivibh"  class="soc" target="_blank" title="GitHub">GH</a>
+    <a href="https://linkedin.com/in/chiranjivibh" class="soc" target="_blank" title="LinkedIn">in</a>
+    <a href="mailto:cbhattar@dri.edu"        class="soc"                 title="Email">@</a>
+  </div>
+
+</nav>
+
+<!-- Mobile hamburger button -->
+<button class="ham" id="ham" aria-label="Open menu">
+  <span></span><span></span><span></span>
+</button>
+
+<!-- Page content wraps in <main class="main"> -->
+<main class="main">
+
+
+<h1 class="title toc-ignore">Interactive Fortran — Chiranjivi
+Bhattarai</h1>
+
+
+
+<!-- ─────────────────────────────────────────────────────────────
+     JAVASCRIPT — Compiler Explorer backend + compiler selector
+──────────────────────────────────────────────────────────────── -->
+<script>
+const FORTRAN_COMPILERS = {
+  "gfortran 13.2": "gfortran-13.2",
+  "gfortran 12.2": "gfortran-12.2",
+  "flang-new":     "flang-new"
+};
+
+function getSelectedCompiler() {
+  const sel = document.getElementById("compiler-select");
+  return sel ? sel.value : "gfortran-13.2";
+}
+
+window.runFortran = async function(id) {
+  const ta  = document.getElementById("ta" + id);
+  const out = document.getElementById("ot" + id);
+  const btn = document.getElementById("bt" + id);
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span> Compiling…';
+  out.className = "out";
+  out.textContent = "Sending to compiler…";
+
+  const compilerId = getSelectedCompiler();
+
+  try {
+    const resp = await fetch(
+      "https://godbolt.org/api/compiler/" + compilerId + "/compile",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          source: ta.value,
+          options: {
+            userArguments: "",
+            executeParameters: { args: [], stdin: "" },
+            compilerOptions: { executorRequest: true },
+            filters: { execute: true }
+          }
+        })
+      }
+    );
+
+    const text = await resp.text();
+    let data;
+
+    try {
+      data = JSON.parse(text);
+    } catch (e) {
+      out.className = "out err";
+      out.textContent = "Compiler Explorer returned non‑JSON:\n\n" + text;
+      btn.disabled = false;
+      btn.innerHTML = "▶ Run";
+      return;
+    }
+
+    let output = "";
+
+    if (data.stderr && data.stderr.length) {
+      const errs = data.stderr.map(l => l.text).join("\n").trim();
+      if (errs) output += "[Compiler output]\n" + errs + "\n\n";
+    }
+
+    if (data.execResult && data.execResult.stdout) {
+      const prog = data.execResult.stdout.map(l => l.text).join("\n").trim();
+      if (prog) output += prog;
+    }
+
+    if (!output) output = "(no output)";
+    if (data.code !== 0) out.className = "out err";
+
+    out.textContent = output;
+
+  } catch (e) {
+    out.className = "out err";
+    out.textContent = "Could not reach Compiler Explorer: " + e.message;
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = "▶ Run";
+};
+
+window.clrFortran = function(id) {
+  const o = document.getElementById("ot" + id);
+  o.textContent = "Click ▶ Run to compile & execute";
+  o.className = "out idle";
+};
+</script>
+<!-- ─────────────────────────────────────────────────────────────
+     HEADER
+──────────────────────────────────────────────────────────────── -->
+<header class="hero">
+<div class="eyebrow">
+Teaching — Fortran
+</div>
+<h1>
+Interactive <em>Fortran</em>
+</h1>
+<p>
+Write and run Modern Fortran in your browser — no installation. Powered
+by <strong>Compiler Explorer</strong>.
+</p>
+</header>
+<div class="content">
+<script>
+const JUDGE0_URL = "https://ce.judge0.com";
+
+// -------------------------------
+// Run Fortran code (stable)
+// -------------------------------
+async function runFortran(id) {
+  let ta  = document.getElementById("ta" + id);
+  let out = document.getElementById("ot" + id);
+  let btn = document.getElementById("bt" + id);
+
+  btn.disabled = true;
+  btn.innerHTML = "Running…";
+  out.textContent = "Submitting to Judge0…";
+
+  try {
+    // 1. Submit code
+    let submit = await fetch(JUDGE0_URL + "/submissions?base64_encoded=false&wait=false", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        source_code: ta.value,
+        language_id: 59,   // ✔ Fortran (gfortran)
+        stdin: ""
+      })
+    });
+
+    let submitData = await submit.json();
+    let token = submitData.token;
+
+    if (!token) throw new Error("No submission token received");
+
+    // 2. Poll result
+    let result;
+    for (let i = 0; i < 20; i++) {
+      await new Promise(r => setTimeout(r, 1000));
+
+      let res = await fetch(JUDGE0_URL + "/submissions/" + token);
+      result = await res.json();
+
+      if (result.status.id >= 3) break; // finished
+    }
+
+    // 3. Output formatting
+    let output = "";
+
+    if (result.compile_output) output += "COMPILATION ERROR:\n" + result.compile_output + "\n\n";
+    if (result.stderr) output += "RUNTIME ERROR:\n" + result.stderr + "\n\n";
+    if (result.stdout) output += result.stdout;
+
+    out.textContent = output || "(no output)";
+
+  } catch (e) {
+    out.textContent = "Error:\n" + e.message;
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = "▶ Run";
+}
+
+// -------------------------------
+// Clear editor
+// -------------------------------
+function clrFortran(id) {
+  document.getElementById("ta" + id).value = "";
+  document.getElementById("ot" + id).textContent = "Cleared.";
+}
+</script>
+<style>
+.repl-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ddd;
+  padding: 6px 10px;
+  border: 1px solid #aaa;
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  font-family: sans-serif;
+}
+.dots { display: flex; gap: 4px; }
+.dots div { width: 10px; height: 10px; border-radius: 50%; }
+.dot-r { background: #ff5f56; }
+.dot-y { background: #ffbd2e; }
+.dot-g { background: #27c93f; }
+.repl-right button {
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid #444;
+  background: #f0f0f0;
+  cursor: pointer;
+}
+textarea {
+  width: 100%;
+  height: 150px;
+  border: 1px solid #aaa;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  font-family: monospace;
+  padding: 8px;
+}
+.out {
+  white-space: pre-wrap;
+  background: #111;
+  color: #0f0;
+  padding: 10px;
+  border-radius: 6px;
+  margin-top: 6px;
+  font-family: monospace;
+}
+</style>
+<div id="lesson-1-hello-world" class="section level1">
+<h1>Lesson 1 — Hello World</h1>
+<div class="repl-bar">
+  <div class="dots">
+    <div class="dot-r"></div><div class="dot-y"></div><div class="dot-g"></div>
+  </div>
+  <strong>Fortran / gfortran</strong>
+  <div class="repl-right">
+    <button onclick="clrFortran('1')">Clear</button>
+    <button id="bt1" onclick="runFortran('1')">▶ Run</button>
+  </div>
+</div>
+
+<textarea id="ta1">
+program hello
+  implicit none
+  print *, "Hello from Fortran!"
+end program hello
+</textarea>
+
+<div class="out" id="ot1">Click ▶ Run to compile & execute</div>
+<div class="repl-bar">
+  <div class="dots">
+    <div class="dot-r"></div><div class="dot-y"></div><div class="dot-g"></div>
+  </div>
+  <strong>Fortran / gfortran</strong>
+  <div class="repl-right">
+    <button onclick="clrFortran('2')">Clear</button>
+    <button id="bt2" onclick="runFortran('2')">▶ Run</button>
+  </div>
+</div>
+
+<textarea id="ta2">
+program vars
+  implicit none
+  integer :: n
+  real :: x
+  n = 10
+  x = 3.14
+  print *, "n =", n
+  print *, "x =", x
+end program vars
+</textarea>
+
+<div class="out" id="ot2">Click ▶ Run to compile & execute</div>
+
+<div class="repl-bar">
+  <div class="dots">
+    <div class="dot-r"></div><div class="dot-y"></div><div class="dot-g"></div>
+  </div>
+  <strong>Fortran / gfortran</strong>
+  <div class="repl-right">
+    <button onclick="clrFortran('3')">Clear</button>
+    <button id="bt3" onclick="runFortran('3')">▶ Run</button>
+  </div>
+</div>
+
+<textarea id="ta3">
+program loops
+  implicit none
+  integer :: i
+  do i = 1, 5
+    print *, "i =", i
+  end do
+end program loops
+</textarea>
+
+<div class="out" id="ot3">Click ▶ Run to compile & execute</div>
+
+</div>
+</div>
+
+<!-- _includes/footer.html  ─  injected after body content on every page -->
+
+</main><!-- /.main -->
+
+<script src="js/nav.js"></script>
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
