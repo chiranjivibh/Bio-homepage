@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Power BI Dashboards — Your Name</title>
+
+<script src="libs/header-attrs-2.29/header-attrs.js"></script>
+<!-- _includes/head.html  ─  injected into <head> of every page -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="author"   content="Chiranjivi Bhattarai" />
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+
+<!-- Favicon – place favicon.ico in site root -->
+<link rel="icon" href="favicon.ico" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+
+
+
+
+</head>
+
+<body>
+
+
+<!-- _includes/sidebar.html  ─  injected before <body> content on every page.
+     EDIT:  sb-avi (initials) · sb-name · sb-role · social links             -->
+
+<div class="ov" id="ov"></div>
+
+<nav class="sidebar" id="sidebar">
+
+  <!-- ── Brand ──────────────────────────────────── -->
+  <div class="sb-brand">
+    <div class="sb-avi">CB</div>         <!-- ← change to your initials -->
+    <div class="sb-name">Chiranjivi Bhattarai</div> <!-- ← change to your name     -->
+    <div class="sb-role"> researcher &amp; educator</div>
+  </div>
+
+  <!-- ── Nav links ──────────────────────────────── -->
+  <div class="nav-body">
+    <div class="nav-grp">Main</div>
+    <a href="index.html"           class="nav-link">🏠 About</a>
+    <a href="projects.html"        class="nav-link">🔬 Projects</a>
+
+    <div class="nav-grp">Teaching</div>
+    <a href="teaching-r.html"      class="nav-link">📊 Interactive R</a>
+    <a href="teaching-python.html" class="nav-link">🐍 Interactive Python</a>
+    <a href="teaching-sql.html"    class="nav-link"> 🗄️ Interactive SQL</a>
+    <a href="teaching-matlab.html"  class="nav-link"> 📐 MATLAB / Octave</a>
+    <a href="teaching-fortran.html" class="nav-link"> ⚡ Fortran</a>
+
+    <div class="nav-grp">Dashboards</div>
+    <a href="teaching-powerbi.html" class="nav-link">📊 Power BI</a>
+  </div>
+
+  <!-- ── Social links ───────────────────────────── -->
+  <div class="sb-foot">
+    <a href="https://github.com/chiranjivibh"  class="soc" target="_blank" title="GitHub">GH</a>
+    <a href="https://linkedin.com/in/chiranjivibh" class="soc" target="_blank" title="LinkedIn">in</a>
+    <a href="mailto:cbhattar@dri.edu"        class="soc"                 title="Email">@</a>
+  </div>
+
+</nav>
+
+<!-- Mobile hamburger button -->
+<button class="ham" id="ham" aria-label="Open menu">
+  <span></span><span></span><span></span>
+</button>
+
+<!-- Page content wraps in <main class="main"> -->
+<main class="main">
+
+
+<h1 class="title toc-ignore">Power BI Dashboards — Your Name</h1>
+
+
+
+<header class="hero">
+<div class="eyebrow">
+Dashboards — Power BI
+</div>
+<h1>
+Power BI <em>Dashboards</em>
+</h1>
+<p>
+Fully interactive reports embedded from <strong>Microsoft Power BI
+Service</strong>. Click, filter, and drill down — no Power BI account
+needed to view.
+</p>
+</header>
+<div class="content">
+<div id="d1" class="lesson">
+<div class="lh">
+<pre><code>&lt;div&gt;
+  &lt;div class=&quot;ln&quot;&gt;DASHBOARD&lt;/div&gt;
+  &lt;h3&gt;Financial Sample Dashboard&lt;/h3&gt;
+&lt;/div&gt;
+&lt;div class=&quot;tags&quot;&gt;&lt;span class=&quot;tag tag-bi&quot;&gt;Finance&lt;/span&gt; &lt;span class=&quot;tag tag-bi&quot;&gt;KPIs&lt;/span&gt; &lt;span class=&quot;tag tag-bi&quot;&gt;Demo&lt;/span&gt;&lt;/div&gt;</code></pre>
+</div>
+<div class="lb">
+<pre><code>&lt;p&gt;Microsoft public demo — monthly P&amp;L, revenue by product/region, and YTD budget vs actuals.&lt;/p&gt;
+&lt;iframe class=&quot;pbi-frame&quot;
+     src=&quot;https://app.powerbi.com/view?r=eyJrIjoiOTZlZWM4YzktMWQzNy00ZjE1LWJhMzItN2QxYmQ5ZDQzNTQyIiwidCI6ImU0MmExNjY0LWY2ZTMtNGMwNi05MzUzLTE1MDljYjc0MGRiYiJ9&quot;
+     frameborder=&quot;0&quot;
+     allowfullscreen
+     loading=&quot;lazy&quot;
+     sandbox=&quot;allow-scripts allow-same-origin allow-popups&quot;&gt;
+   &lt;/iframe&gt;
+   &lt;p class=&quot;pbi-note&quot;&gt;
+     &lt;a href=&quot;https://app.powerbi.com/view?r=eyJrIjoiOTZlZWM4YzktMWQzNy00ZjE1LWJhMzItN2QxYmQ5ZDQzNTQyIiwidCI6ImU0MmExNjY0LWY2ZTMtNGMwNi05MzUzLTE1MDljYjc0MGRiYiJ9&quot; target=&quot;_blank&quot;&gt;Open full screen ↗&lt;/a&gt;
+   &lt;/p&gt;</code></pre>
+</div>
+</div>
+<div id="d2" class="lesson">
+<div class="lh">
+<pre><code>&lt;div&gt;
+  &lt;div class=&quot;ln&quot;&gt;DASHBOARD&lt;/div&gt;
+  &lt;h3&gt;Retail Analysis Sample&lt;/h3&gt;
+&lt;/div&gt;
+&lt;div class=&quot;tags&quot;&gt;&lt;span class=&quot;tag tag-bi&quot;&gt;Retail&lt;/span&gt; &lt;span class=&quot;tag tag-bi&quot;&gt;Sales&lt;/span&gt; &lt;span class=&quot;tag tag-bi&quot;&gt;Demo&lt;/span&gt;&lt;/div&gt;</code></pre>
+</div>
+<div class="lb">
+<pre><code>&lt;p&gt;Microsoft public demo — store performance, sales trends, and category analysis.&lt;/p&gt;
+&lt;iframe class=&quot;pbi-frame&quot;
+     src=&quot;https://app.powerbi.com/view?r=eyJrIjoiOWI2ZWVkNmEtNjBhNC00ZjE3LWEzMGUtMDEzYTFlMDE2NjBiIiwidCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsImMiOjV9&quot;
+     frameborder=&quot;0&quot;
+     allowfullscreen
+     loading=&quot;lazy&quot;
+     sandbox=&quot;allow-scripts allow-same-origin allow-popups&quot;&gt;
+   &lt;/iframe&gt;
+   &lt;p class=&quot;pbi-note&quot;&gt;
+     &lt;a href=&quot;https://app.powerbi.com/view?r=eyJrIjoiOWI2ZWVkNmEtNjBhNC00ZjE3LWEzMGUtMDEzYTFlMDE2NjBiIiwidCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsImMiOjV9&quot; target=&quot;_blank&quot;&gt;Open full screen ↗&lt;/a&gt;
+   &lt;/p&gt;</code></pre>
+</div>
+</div>
+<div id="d3" class="lesson">
+<div class="lh">
+<pre><code>&lt;div&gt;
+  &lt;div class=&quot;ln&quot;&gt;DASHBOARD&lt;/div&gt;
+  &lt;h3&gt;Your Custom Dashboard&lt;/h3&gt;
+&lt;/div&gt;
+&lt;div class=&quot;tags&quot;&gt;&lt;span class=&quot;tag tag-bi&quot;&gt;Custom&lt;/span&gt;&lt;/div&gt;</code></pre>
+</div>
+<div class="lb">
+<pre><code>&lt;p&gt;Replace this with your own Power BI report.&lt;/p&gt;
+&lt;div class=&quot;pbi-placeholder&quot;&gt;
+  &lt;div class=&quot;pbi-ph-icon&quot;&gt;📊&lt;/div&gt;
+  &lt;h4&gt;Your Dashboard Goes Here&lt;/h4&gt;
+  &lt;p&gt;Add your embed URL in the R code block above.&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+</div>
+</div>
+<div id="d1" class="lesson">
+<div class="lh">
+<pre><code>&lt;div&gt;
+  &lt;div class=&quot;ln&quot;&gt;DASHBOARD&lt;/div&gt;
+  &lt;h3&gt;Financial Sample Dashboard&lt;/h3&gt;
+&lt;/div&gt;
+&lt;div class=&quot;tags&quot;&gt;&lt;span class=&quot;tag tag-bi&quot;&gt;Finance&lt;/span&gt; &lt;span class=&quot;tag tag-bi&quot;&gt;KPIs&lt;/span&gt; &lt;span class=&quot;tag tag-bi&quot;&gt;Demo&lt;/span&gt;&lt;/div&gt;</code></pre>
+</div>
+<div class="lb">
+<pre><code>&lt;p&gt;Microsoft public demo — monthly P&amp;L, revenue by product/region, and YTD budget vs actuals.&lt;/p&gt;
+&lt;iframe
+     class=&quot;pbi-frame&quot;
+     src=&quot;https://app.powerbi.com/view?r=eyJrIjoiOTZlZWM4YzktMWQzNy00ZjE1LWJhMzItN2QxYmQ5ZDQzNTQyIiwidCI6ImU0MmExNjY0LWY2ZTMtNGMwNi05MzUzLTE1MDljYjc0MGRiYiJ9&quot;
+     frameborder=&quot;0&quot;
+     allowfullscreen=&quot;true&quot;
+     loading=&quot;lazy&quot;
+     title=&quot;Financial Sample Dashboard&quot;
+     sandbox=&quot;allow-scripts allow-same-origin allow-forms allow-popups&quot;&gt;
+   &lt;/iframe&gt;
+   &lt;p class=&quot;pbi-note&quot;&gt;
+     ↔ Drag to pan &amp;nbsp;·&amp;nbsp; Scroll to zoom &amp;nbsp;·&amp;nbsp;
+     Click visuals to cross-filter &amp;nbsp;·&amp;nbsp;
+     &lt;a href=&quot;https://app.powerbi.com/view?r=eyJrIjoiOTZlZWM4YzktMWQzNy00ZjE1LWJhMzItN2QxYmQ5ZDQzNTQyIiwidCI6ImU0MmExNjY0LWY2ZTMtNGMwNi05MzUzLTE1MDljYjc0MGRiYiJ9&quot; target=&quot;_blank&quot;&gt;Open full screen ↗&lt;/a&gt;
+   &lt;/p&gt;</code></pre>
+</div>
+</div>
+<div id="d2" class="lesson">
+<div class="lh">
+<pre><code>&lt;div&gt;
+  &lt;div class=&quot;ln&quot;&gt;DASHBOARD&lt;/div&gt;
+  &lt;h3&gt;Retail Analysis Sample&lt;/h3&gt;
+&lt;/div&gt;
+&lt;div class=&quot;tags&quot;&gt;&lt;span class=&quot;tag tag-bi&quot;&gt;Retail&lt;/span&gt; &lt;span class=&quot;tag tag-bi&quot;&gt;Sales&lt;/span&gt; &lt;span class=&quot;tag tag-bi&quot;&gt;Demo&lt;/span&gt;&lt;/div&gt;</code></pre>
+</div>
+<div class="lb">
+<pre><code>&lt;p&gt;Microsoft public demo — store performance, sales trends, and category analysis.&lt;/p&gt;
+&lt;iframe
+     class=&quot;pbi-frame&quot;
+     src=&quot;https://app.powerbi.com/view?r=eyJrIjoiOWI2ZWVkNmEtNjBhNC00ZjE3LWEzMGUtMDEzYTFlMDE2NjBiIiwidCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsImMiOjV9&quot;
+     frameborder=&quot;0&quot;
+     allowfullscreen=&quot;true&quot;
+     loading=&quot;lazy&quot;
+     title=&quot;Retail Analysis Sample&quot;
+     sandbox=&quot;allow-scripts allow-same-origin allow-forms allow-popups&quot;&gt;
+   &lt;/iframe&gt;
+   &lt;p class=&quot;pbi-note&quot;&gt;
+     ↔ Drag to pan &amp;nbsp;·&amp;nbsp; Scroll to zoom &amp;nbsp;·&amp;nbsp;
+     Click visuals to cross-filter &amp;nbsp;·&amp;nbsp;
+     &lt;a href=&quot;https://app.powerbi.com/view?r=eyJrIjoiOWI2ZWVkNmEtNjBhNC00ZjE3LWEzMGUtMDEzYTFlMDE2NjBiIiwidCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsImMiOjV9&quot; target=&quot;_blank&quot;&gt;Open full screen ↗&lt;/a&gt;
+   &lt;/p&gt;</code></pre>
+</div>
+</div>
+<div id="d3" class="lesson">
+<div class="lh">
+<pre><code>&lt;div&gt;
+  &lt;div class=&quot;ln&quot;&gt;DASHBOARD&lt;/div&gt;
+  &lt;h3&gt;Your Custom Dashboard&lt;/h3&gt;
+&lt;/div&gt;
+&lt;div class=&quot;tags&quot;&gt;&lt;span class=&quot;tag tag-bi&quot;&gt;Custom&lt;/span&gt;&lt;/div&gt;</code></pre>
+</div>
+<div class="lb">
+<pre><code>&lt;p&gt;Replace this with your own Power BI report.&lt;/p&gt;</code></pre>
+<div class="pbi-placeholder">
+<div class="pbi-ph-icon">
+📊
+</div>
+<h4>
+Your Dashboard Goes Here
+</h4>
+<ol>
+<li>
+Sign in to
+<a href="https://app.powerbi.com" target="_blank">app.powerbi.com</a>
+</li>
+<li>
+Open your report → <strong>File → Embed report → Website or
+portal</strong>
+</li>
+<li>
+Copy the <code>src=“…”</code> value from the &lt;iframe&gt; snippet
+shown
+</li>
+<li>
+In this <code>.Rmd</code> file: set <code>has_url = TRUE</code> and
+paste the URL into <code>embed_url</code>
+</li>
+<li>
+Re-knit the file → the iframe will appear here
+</li>
+</ol>
+<p class="pbi-ph-tip">
+💡 Try the free Microsoft public samples in Lesson d1 &amp; d2 above to
+see live interactivity.
+</p>
+</div>
+</div>
+</div>
+<hr>
+<!-- How Power BI embedding works -->
+<div class="sh">
+<h2>
+How to Embed Your Own Reports
+</h2>
+<div class="sh-line">
+
+</div>
+</div>
+<div class="grid">
+<div class="card">
+<pre><code>&lt;h3&gt;1️⃣ Create in Desktop&lt;/h3&gt;
+&lt;p&gt;Build your report in &lt;strong&gt;Power BI Desktop&lt;/strong&gt; (free download from Microsoft). Connect to Excel, CSV, SQL, or hundreds of other sources.&lt;/p&gt;</code></pre>
+</div>
+<div class="card">
+<pre><code>&lt;h3&gt;2️⃣ Publish to Service&lt;/h3&gt;
+&lt;p&gt;Click &lt;em&gt;Home → Publish&lt;/em&gt; in Desktop. A free Microsoft account gives you a personal workspace at &lt;strong&gt;app.powerbi.com&lt;/strong&gt;.&lt;/p&gt;</code></pre>
+</div>
+<div class="card">
+<pre><code>&lt;h3&gt;3️⃣ Get Embed URL&lt;/h3&gt;
+&lt;p&gt;Open the report in Power BI Service → &lt;em&gt;File → Embed report → Website or portal&lt;/em&gt; → copy the &lt;code&gt;src=&quot;…&quot;&lt;/code&gt; from the iframe code.&lt;/p&gt;</code></pre>
+</div>
+<div class="card">
+<pre><code>&lt;h3&gt;4️⃣ Paste &amp;amp; Knit&lt;/h3&gt;
+&lt;p&gt;Add the URL to &lt;code&gt;embed_url&lt;/code&gt; in the R setup chunk of this file, set &lt;code&gt;has_url = TRUE&lt;/code&gt;, then run &lt;code&gt;Rscript render.R&lt;/code&gt;.&lt;/p&gt;</code></pre>
+</div>
+</div>
+<div class="ib info" style="margin-top:1.25rem">
+<i>ℹ️</i>
+<div>
+<pre><code>&lt;strong&gt;No account needed to view.&lt;/strong&gt;
+Reports published via &lt;em&gt;Website or portal&lt;/em&gt; embed are publicly
+viewable by anyone — your website visitors do not need a Power BI account.
+All interactivity (filters, slicers, drill-through) works in the browser.</code></pre>
+</div>
+</div>
+<div class="ib warn">
+<i>⚠️</i>
+<div>
+<pre><code>&lt;strong&gt;Private data:&lt;/strong&gt; The public embed link makes your report
+visible to anyone with the URL. For restricted reports, use
+&lt;a href=&quot;https://learn.microsoft.com/en-us/power-bi/developer/embedded/&quot; target=&quot;_blank&quot;&gt;
+Power BI Embedded&lt;/a&gt; (Azure licensing required).</code></pre>
+</div>
+</div>
+</div>
+<!-- /.content -->
+<style>
+/* ── Power BI iframe ─────────────────────────────── */
+
+
+.pbi-note {
+  font-family: var(--mono);
+  font-size: .62rem;
+  color: var(--txt4);
+  margin-top: .5rem !important;
+  margin-bottom: 0 !important;
+  text-align: right;
+}
+
+/* ── Placeholder card shown when no URL is set ───── */
+.pbi-placeholder {
+  border: 2px dashed var(--border);
+  border-radius: var(--br-lg);
+  padding: 2rem 1.75rem;
+  text-align: center;
+  margin-top: .5rem;
+  background: rgba(255,255,255,.015);
+}
+
+.pbi-ph-icon {
+  font-size: 2.5rem;
+  margin-bottom: .75rem;
+}
+
+.pbi-placeholder h4 {
+  font-size: .92rem;
+  font-weight: 600;
+  color: var(--txt);
+  margin-bottom: 1rem;
+}
+
+.pbi-placeholder ol {
+  text-align: left;
+  display: inline-block;
+  font-size: .8rem;
+  color: var(--txt3);
+  line-height: 2;
+  margin-bottom: 1rem;
+}
+
+.pbi-placeholder ol li { margin-bottom: .15rem; }
+
+.pbi-ph-tip {
+  font-size: .76rem !important;
+  color: var(--txt4) !important;
+  font-style: italic;
+  margin-top: .5rem !important;
+}
+.pbi-frame {
+  display: block;
+  width: 100%;
+  height: 85vh;              /* ✔️ key fix: full usable screen height */
+  border: 1px solid var(--border);
+  border-radius: var(--br-lg);
+  background: var(--surface);
+  margin-top: .5rem;
+}
+</style>
+</div>
+
+<!-- _includes/footer.html  ─  injected after body content on every page -->
+
+</main><!-- /.main -->
+
+<script src="js/nav.js"></script>
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

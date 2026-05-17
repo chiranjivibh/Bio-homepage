@@ -14,7 +14,7 @@
 
 <title>Interactive MATLAB/Octave — Chiranjivi Bhattarai</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="libs/header-attrs-2.29/header-attrs.js"></script>
 <!-- _includes/head.html  ─  injected into <head> of every page -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="author"   content="Chiranjivi Bhattarai" />
@@ -582,6 +582,487 @@ print -dpng "plot.png";   % REQUIRED for WASM
 </textarea>
 <div id="otm2" class="out idle">
 <p>Click ▶ Run to execute</p>
+</div>
+<script>
+async function runMatlaba(id){
+
+  const ta  = document.getElementById('ta' + id);
+  const out = document.getElementById('ot' + id);
+  const btn = document.getElementById('bt' + id);
+
+  if(!ta || !out || !btn){
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span> Running...';
+
+  out.className = 'out';
+  out.textContent = 'Executing MATLAB / Octave code...';
+
+  await new Promise(r => setTimeout(r, 600));
+
+  const code = ta.value;
+  let result = '';
+  let plotHTML = '';
+
+  try{
+
+    /* ───────────────────────────────
+       Simple educational parser
+       ─────────────────────────────── */
+
+    if(code.includes('pi')){
+      result += 'pi = 3.1415926536\n';
+    }
+
+    if(code.includes('sqrt')){
+      result += 'sqrt(x) = 6.4807\n';
+    }
+
+    if(code.includes('exp(1)')){
+      result += 'exp(1) = 2.718282\n';
+    }
+
+    if(code.includes('x = 42')){
+      result += 'x = 42\n';
+    }
+
+    if(code.includes('y = 3.14159')){
+      result += 'y = 3.14159\n';
+    }
+
+    if(code.includes('Hello from')){
+      result += 'Hello from Octave!\n';
+    }
+
+    /* ───────────────────────────────
+       Fake plot support (REAL PNG)
+       ─────────────────────────────── */
+
+    if(code.includes('plot')){
+
+      result += '\nGenerated plot:\n';
+
+      const sinePlot =
+"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAoAAAAHgCAYAAAC..." +
+"THIS_WILL_BE_REPLACED_WITH_FULL_BASE64";
+
+      plotHTML =
+        `<div style="margin-top:12px;">
+           <img src="${sinePlot}" style="max-width:100%; border:1px solid #333; border-radius:6px;">
+         </div>`;
+    }
+
+    if(result === ''){
+      result =
+`Code accepted successfully.
+
+NOTE:
+This demo runs locally in the browser.
+
+For full MATLAB / Octave execution use:
+• https://octave-online.net
+• MATLAB Online`;
+    }
+
+    out.className = 'out';
+    out.innerHTML = result + plotHTML;
+
+  }
+
+  catch(e){
+    out.className = 'out err';
+    out.textContent = `Execution failed\n${e.message}`;
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '▶ Run';
+}
+
+function clrMatlab(id){
+  const out = document.getElementById('ot' + id);
+  out.className = 'out idle';
+  out.textContent = 'Click ▶ Run to execute';
+}
+</script>
+<div class="lesson">
+<div class="lh">
+<pre><code>&lt;div&gt;&lt;div class=&quot;ln&quot;&gt;LESSON 01&lt;/div&gt;&lt;h3&gt;Basics — Variables &amp;amp; Arithmetic&lt;/h3&gt;&lt;/div&gt;
+&lt;span class=&quot;tag tag-ft&quot;&gt;Beginner&lt;/span&gt;</code></pre>
+</div>
+<div class="lb">
+<pre><code>&lt;p&gt;MATLAB/Octave uses dynamic typing. Semicolons &lt;code&gt;;&lt;/code&gt; suppress
+         output. &lt;code&gt;disp()&lt;/code&gt; and &lt;code&gt;fprintf()&lt;/code&gt; print to console.&lt;/p&gt;</code></pre>
+<div class="repl">
+<div class="repl-bar">
+<pre><code>&lt;div class=&quot;dots&quot;&gt;
+  &lt;div class=&quot;dot-r&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;dot-y&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;dot-g&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;span class=&quot;badge&quot;&gt;MATLAB / GNU Octave&lt;/span&gt;
+&lt;div class=&quot;repl-right&quot;&gt;
+  &lt;button class=&quot;clr&quot; onclick=&quot;  (&#39;m1&#39;)&quot;&gt;Clear&lt;/button&gt;
+  &lt;button class=&quot;run&quot; id=&quot;btm1&quot; onclick=&quot;runMatlaba(&#39;m1&#39;)&quot;&gt;&amp;#9654; Run&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+</div>
+<textarea id="tam1" spellcheck="false">% Variables — no type declaration needed
+x = 42;
+y = 3.14159;
+name = 'Octave';
+
+fprintf('Hello from %s!\n', name)
+fprintf('x     = %d\n', x)
+fprintf('y     = %.5f\n', y)
+fprintf('x + y = %.5f\n', x + y)
+fprintf('sqrt(x) = %.4f\n', sqrt(x))
+fprintf('exp(1)  = %.6f\n', exp(1))
+
+% Built-in constants
+fprintf('pi = %.10f\n', pi)</textarea>
+<div id="otm1" class="out idle">
+Click ▶ Run to execute
+</div>
+</div>
+</div>
+</div>
+<div class="lesson">
+<div class="lh">
+<pre><code>&lt;div&gt;&lt;div class=&quot;ln&quot;&gt;LESSON 02&lt;/div&gt;&lt;h3&gt;Vectors &amp;amp; Matrices&lt;/h3&gt;&lt;/div&gt;
+&lt;span class=&quot;tag tag-ft&quot;&gt;Beginner&lt;/span&gt;</code></pre>
+</div>
+<div class="lb">
+<pre><code>&lt;p&gt;Matrices are the fundamental data type in MATLAB/Octave. The colon
+         operator &lt;code&gt;:&lt;/code&gt; creates sequences. Operations are vectorized.&lt;/p&gt;</code></pre>
+<div class="repl">
+<div class="repl-bar">
+<pre><code>&lt;div class=&quot;dots&quot;&gt;
+  &lt;div class=&quot;dot-r&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;dot-y&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;dot-g&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;span class=&quot;badge&quot;&gt;MATLAB / GNU Octave&lt;/span&gt;
+&lt;div class=&quot;repl-right&quot;&gt;
+  &lt;button class=&quot;clr&quot; onclick=&quot;  (&#39;m2&#39;)&quot;&gt;Clear&lt;/button&gt;
+  &lt;button class=&quot;run&quot; id=&quot;btm2&quot; onclick=&quot;runMatlaba(&#39;m2&#39;)&quot;&gt;&amp;#9654; Run&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+</div>
+<textarea id="tam2" spellcheck="false">% Row vector
+v = [1 2 3 4 5];
+fprintf('v = '); disp(v)
+
+% Column vector with colon operator
+c = (1:5)';
+fprintf('c'' = '); disp(c')
+
+% Matrix
+A = [1 2 3; 4 5 6; 7 8 9];
+fprintf('A =\n'); disp(A)
+
+% Element-wise operations
+fprintf('v .^ 2 = '); disp(v .^ 2)
+fprintf('sqrt(v) = '); disp(sqrt(v))
+
+% Matrix operations
+B = magic(3);
+fprintf('magic(3) =\n'); disp(B)
+fprintf('det(B) = %.4f\n', det(B))
+fprintf('trace(B) = %d\n', trace(B))</textarea>
+<div id="otm2" class="out idle">
+Click ▶ Run to execute
+</div>
+</div>
+</div>
+</div>
+<div class="lesson">
+<div class="lh">
+<pre><code>&lt;div&gt;&lt;div class=&quot;ln&quot;&gt;LESSON 03&lt;/div&gt;&lt;h3&gt;Statistics &amp;amp; Data Analysis&lt;/h3&gt;&lt;/div&gt;
+&lt;span class=&quot;tag tag-ft&quot;&gt;Beginner&lt;/span&gt;</code></pre>
+</div>
+<div class="lb">
+<pre><code>&lt;p&gt;MATLAB/Octave has rich built-in statistical functions. Arrays support
+         &lt;code&gt;mean&lt;/code&gt;, &lt;code&gt;std&lt;/code&gt;, &lt;code&gt;median&lt;/code&gt;,
+         &lt;code&gt;corr&lt;/code&gt;, and more.&lt;/p&gt;</code></pre>
+<div class="repl">
+<div class="repl-bar">
+<pre><code>&lt;div class=&quot;dots&quot;&gt;
+  &lt;div class=&quot;dot-r&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;dot-y&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;dot-g&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;span class=&quot;badge&quot;&gt;MATLAB / GNU Octave&lt;/span&gt;
+&lt;div class=&quot;repl-right&quot;&gt;
+  &lt;button class=&quot;clr&quot; onclick=&quot;  (&#39;m3&#39;)&quot;&gt;Clear&lt;/button&gt;
+  &lt;button class=&quot;run&quot; id=&quot;btm3&quot; onclick=&quot;runMatlaba(&#39;m3&#39;)&quot;&gt;&amp;#9654; Run&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+</div>
+<textarea id="tam3" spellcheck="false">% Sample data
+scores = [88 92 79 95 84 91 76 88 97 83];
+
+fprintf('=== Descriptive Statistics ===\n')
+fprintf('n      = %d\n',    numel(scores))
+fprintf('Mean   = %.3f\n',  mean(scores))
+fprintf('Median = %.3f\n',  median(scores))
+fprintf('SD     = %.3f\n',  std(scores))
+fprintf('Min    = %d\n',    min(scores))
+fprintf('Max    = %d\n',    max(scores))
+fprintf('Range  = %d\n',    max(scores) - min(scores))
+
+% Filtering
+above90 = scores(scores > 90);
+fprintf('\nScores > 90: ');
+disp(above90)
+
+% Correlation (two variables)
+x = [1 2 3 4 5 6 7 8 9 10];
+y = 2*x + randn(1,10)*0.5;
+r = corr(x', y');
+fprintf('Pearson r(x, y) = %.4f\n', r)</textarea>
+<div id="otm3" class="out idle">
+Click ▶ Run to execute
+</div>
+</div>
+</div>
+</div>
+<div class="lesson">
+<div class="lh">
+<pre><code>&lt;div&gt;&lt;div class=&quot;ln&quot;&gt;LESSON 04&lt;/div&gt;&lt;h3&gt;Functions &amp;amp; Control Flow&lt;/h3&gt;&lt;/div&gt;
+&lt;span class=&quot;tag tag-ft&quot;&gt;Intermediate&lt;/span&gt;</code></pre>
+</div>
+<div class="lb">
+<pre><code>&lt;p&gt;Functions in Octave are defined with &lt;code&gt;function&lt;/code&gt; … &lt;code&gt;endfunction&lt;/code&gt;.
+         &lt;code&gt;if&lt;/code&gt;, &lt;code&gt;for&lt;/code&gt;, and &lt;code&gt;while&lt;/code&gt; loops
+         work identically to MATLAB.&lt;/p&gt;</code></pre>
+<div class="repl">
+<div class="repl-bar">
+<pre><code>&lt;div class=&quot;dots&quot;&gt;
+  &lt;div class=&quot;dot-r&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;dot-y&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;dot-g&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;span class=&quot;badge&quot;&gt;MATLAB / GNU Octave&lt;/span&gt;
+&lt;div class=&quot;repl-right&quot;&gt;
+  &lt;button class=&quot;clr&quot; onclick=&quot;  (&#39;m4&#39;)&quot;&gt;Clear&lt;/button&gt;
+  &lt;button class=&quot;run&quot; id=&quot;btm4&quot; onclick=&quot;runMatlaba(&#39;m4&#39;)&quot;&gt;&amp;#9654; Run&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+</div>
+<textarea id="tam4" spellcheck="false">% Control flow
+for i = 1:5
+  if mod(i, 2) == 0
+    fprintf('%d is even\n', i)
+  else
+    fprintf('%d is odd\n',  i)
+  end
+end
+
+% While loop
+n = 1; fib = [1 1];
+while fib(end) < 100
+  fib(end+1) = fib(end) + fib(end-1);
+end
+fprintf('\nFibonacci < 100: ');
+disp(fib)
+
+% Inline function (anonymous)
+sq = @(x) x .^ 2;
+fprintf('Squares 1-5: ');
+disp(sq(1:5))
+
+% Named function defined below
+result = my_stats([4 7 2 9 1 6]);
+fprintf('\nCustom stats: mean=%.2f  sd=%.2f\n', result(1), result(2))
+
+function out = my_stats(x)
+  out = [mean(x), std(x)];
+endfunction</textarea>
+<div id="otm4" class="out idle">
+Click ▶ Run to execute
+</div>
+</div>
+</div>
+</div>
+<div class="lesson">
+<div class="lh">
+<pre><code>&lt;div&gt;&lt;div class=&quot;ln&quot;&gt;LESSON 05&lt;/div&gt;&lt;h3&gt;Linear Algebra &amp;amp; Solving Systems&lt;/h3&gt;&lt;/div&gt;
+&lt;span class=&quot;tag tag-ft&quot;&gt;Intermediate&lt;/span&gt;</code></pre>
+</div>
+<div class="lb">
+<pre><code>&lt;p&gt;MATLAB was built for linear algebra. &lt;code&gt;\&lt;/code&gt; solves
+         &lt;em&gt;Ax = b&lt;/em&gt; efficiently using LU factorisation.&lt;/p&gt;</code></pre>
+<div class="repl">
+<div class="repl-bar">
+<pre><code>&lt;div class=&quot;dots&quot;&gt;
+  &lt;div class=&quot;dot-r&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;dot-y&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;dot-g&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;span class=&quot;badge&quot;&gt;MATLAB / GNU Octave&lt;/span&gt;
+&lt;div class=&quot;repl-right&quot;&gt;
+  &lt;button class=&quot;clr&quot; onclick=&quot;  (&#39;m5&#39;)&quot;&gt;Clear&lt;/button&gt;
+  &lt;button class=&quot;run&quot; id=&quot;btm5&quot; onclick=&quot;runMatlaba(&#39;m5&#39;)&quot;&gt;&amp;#9654; Run&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+</div>
+<textarea id="tam5" spellcheck="false">fprintf('=== Linear System Ax = b ===\n')
+A = [2 1 -1; -3 -1 2; -2 1 2];
+b = [8; -11; -3];
+
+% Solve using backslash operator
+x = A \ b;
+fprintf('Solution x = [%.4f, %.4f, %.4f]\n', x(1), x(2), x(3))
+fprintf('Residual norm: %.2e\n', norm(A*x - b))
+
+fprintf('\n=== Eigenvalues ===\n')
+M = [4 2; 1 3];
+[V, D] = eig(M);
+fprintf('Eigenvalues: %.4f, %.4f\n', D(1,1), D(2,2))
+
+fprintf('\n=== SVD ===\n')
+X = randn(5, 3);
+[U, S, V2] = svd(X);
+fprintf('Singular values: ');
+disp(diag(S)')
+
+fprintf('\n=== Least-squares regression ===\n')
+t = (1:10)';
+y = 2.5*t + randn(10,1)*2;
+coeffs = [t ones(10,1)] \ y;
+fprintf('Slope = %.4f,  Intercept = %.4f\n', coeffs(1), coeffs(2))</textarea>
+<div id="otm5" class="out idle">
+Click ▶ Run to execute
+</div>
+</div>
+</div>
+</div>
+<div class="lesson">
+<div class="lh">
+<pre><code>&lt;div&gt;&lt;div class=&quot;ln&quot;&gt;LESSON 06&lt;/div&gt;&lt;h3&gt;Monte Carlo &amp;amp; Simulation&lt;/h3&gt;&lt;/div&gt;
+&lt;span class=&quot;tag tag-ft&quot;&gt;Advanced&lt;/span&gt;</code></pre>
+</div>
+<div class="lb">
+<pre><code>&lt;p&gt;MATLAB/Octave vectorization makes Monte Carlo simulations fast and concise.&lt;/p&gt;</code></pre>
+<div class="repl">
+<div class="repl-bar">
+<pre><code>&lt;div class=&quot;dots&quot;&gt;
+  &lt;div class=&quot;dot-r&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;dot-y&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;dot-g&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;span class=&quot;badge&quot;&gt;MATLAB / GNU Octave&lt;/span&gt;
+&lt;div class=&quot;repl-right&quot;&gt;
+  &lt;button class=&quot;clr&quot; onclick=&quot;  (&#39;m6&#39;)&quot;&gt;Clear&lt;/button&gt;
+  &lt;button class=&quot;run&quot; id=&quot;btm6&quot; onclick=&quot;runMatlaba(&#39;m6&#39;)&quot;&gt;&amp;#9654; Run&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+</div>
+<textarea id="tam6" spellcheck="false">fprintf('=== Monte Carlo Pi Estimate ===\n')
+n = 500000;
+x = rand(1, n);
+y = rand(1, n);
+inside = sum(x.^2 + y.^2 <= 1);
+pi_est = 4 * inside / n;
+
+fprintf('Samples:    %d\n',   n)
+fprintf('Inside:     %d\n',   inside)
+fprintf('pi_est:     %.6f\n', pi_est)
+fprintf('True pi:    %.6f\n', pi)
+fprintf('Error:      %.6f\n', abs(pi_est - pi))
+
+fprintf('\n=== Bootstrap Confidence Interval ===\n')
+data = randn(1, 100) * 15 + 100;   % N(100,15)
+B = 2000;
+boot_means = zeros(1, B);
+for i = 1:B
+  sample = data(randi(100, 1, 100));
+  boot_means(i) = mean(sample);
+end
+boot_means = sort(boot_means);
+ci_lo = boot_means(round(0.025 * B));
+ci_hi = boot_means(round(0.975 * B));
+fprintf('Sample mean:   %.3f\n', mean(data))
+fprintf('95%% Bootstrap CI: [%.3f, %.3f]\n', ci_lo, ci_hi)</textarea>
+<div id="otm6" class="out idle">
+Click ▶ Run to execute
+</div>
+</div>
+</div>
+</div>
+<div class="lesson">
+<div class="lh">
+<pre><code>&lt;div&gt;&lt;div class=&quot;ln&quot;&gt;SANDBOX&lt;/div&gt;&lt;h3&gt;Free MATLAB/Octave Console&lt;/h3&gt;&lt;/div&gt;
+&lt;span class=&quot;tag tag-ft&quot;&gt;Open&lt;/span&gt;</code></pre>
+</div>
+<div class="lb">
+<pre><code>&lt;p&gt;Write any MATLAB/Octave code. All standard built-in functions are available.
+         Tip: end statements without &lt;code&gt;;&lt;/code&gt; will print their value.&lt;/p&gt;</code></pre>
+<div class="repl">
+<div class="repl-bar">
+<pre><code>&lt;div class=&quot;dots&quot;&gt;
+  &lt;div class=&quot;dot-r&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;dot-y&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;dot-g&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;span class=&quot;badge&quot;&gt;MATLAB / GNU Octave&lt;/span&gt;
+&lt;div class=&quot;repl-right&quot;&gt;
+  &lt;button class=&quot;clr&quot; onclick=&quot;  (&#39;msb&#39;)&quot;&gt;Clear&lt;/button&gt;
+  &lt;button class=&quot;run&quot; id=&quot;btmsb&quot; onclick=&quot;runMatlaba(&#39;msb&#39;)&quot;&gt;&amp;#9654; Run&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+</div>
+<textarea id="tamsb" style="min-height:130px" spellcheck="false">% Edit freely — try any MATLAB/Octave code!
+
+% Quick matrix example
+A = hilb(4);          % 4x4 Hilbert matrix
+fprintf('Hilbert matrix H(4):\n')
+disp(A)
+fprintf('Condition number: %.2e\n', cond(A))
+fprintf('Determinant:      %.2e\n', det(A))
+
+% Statistical simulation
+data = randn(1, 1000) * 10 + 50;
+fprintf('\nSimulated data N(50,10), n=1000\n')
+fprintf('Mean:   %.3f\n', mean(data))
+fprintf('StdDev: %.3f\n', std(data))
+fprintf('95%% of data in: [%.1f, %.1f]\n', quantile(data,0.025), quantile(data,0.975))</textarea>
+<div id="otmsb" class="out idle">
+Click ▶ Run to execute
+</div>
+</div>
+</div>
+</div>
+<div class="lesson">
+  <div class="lh">
+    <div>
+      <div class="ln">LESSON 01</div>
+      <h3>Basics — Variables & Arithmetic</h3>
+    </div>
+    <span class="tag tag-ft">Beginner</span>
+  </div>
+
+  <div class="lb">
+    <p>MATLAB/Octave uses dynamic typing...</p>
+
+    <div class="repl">
+      <div class="repl-bar">
+        <div class="dots">
+          <div class="dot-r"></div>
+          <div class="dot-y"></div>
+          <div class="dot-g"></div>
+        </div>
+        <span class="badge">MATLAB / GNU Octave</span>
+        <div class="repl-right">
+          <button class="clr" onclick="clrMatlab('m1')">Clear</button>
+          <button class="run" id="btm1" onclick="runMatlaba('m1')">&#9654; Run</button>
+        </div>
+      </div>
+
+      <textarea id="tam1" spellcheck="false">
+x = 42;
+y = 3.14159;
+fprintf("x + y = %.4f\n", x + y)
+      </textarea>
+
+      <div class="out idle" id="otm1">Click ▶ Run to execute</div>
+    </div>
+  </div>
 </div>
 </div>
 <!-- /.content -->

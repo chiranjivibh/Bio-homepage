@@ -110,6 +110,624 @@
      Loads R into the browser; no server needed.
      Docs: https://docs.r-wasm.org/webr/latest/
 ═══════════════════════════════════════════════ -->
+<style>
+
+/* ─────────────────────────────────────────
+   OBSERVABLE / NOTEBOOK STYLE LAYOUT
+───────────────────────────────────────── */
+
+:root{
+
+  --bg:#0b1220;
+  --panel:#111827;
+  --panel2:#0f172a;
+
+  --border:rgba(255,255,255,.06);
+
+  --text:#e5eefc;
+  --muted:#94a3b8;
+
+  --blue:#2563eb;
+  --blue2:#60a5fa;
+
+  --green:#10b981;
+
+  --shadow:
+    0 10px 30px rgba(0,0,0,.28);
+}
+
+/* RESET */
+
+html,
+body{
+
+  margin:0;
+  padding:0;
+
+  width:100%;
+  min-height:100%;
+
+  overflow-x:hidden;
+
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(37,99,235,.08),
+      transparent 420px
+    ),
+    var(--bg);
+
+  color:var(--text);
+
+  font-family:
+    Inter,
+    system-ui,
+    sans-serif;
+}
+
+/* REMOVE RMD WIDTH LIMITS */
+
+.main-container,
+.container,
+.container-fluid,
+.content,
+.main-content{
+
+  width:100% !important;
+  max-width:none !important;
+}
+
+/* MAIN */
+
+.main-content{
+
+  margin-left:260px;
+
+  min-height:100vh;
+
+  padding:34px;
+
+  box-sizing:border-box;
+}
+
+.content-wrapper{
+
+  width:100%;
+  max-width:1280px;
+
+  margin:0 auto;
+}
+
+/* ─────────────────────────────────────────
+   HERO
+───────────────────────────────────────── */
+
+.hero{
+
+  position:relative;
+
+  overflow:hidden;
+
+  padding:42px;
+
+  border-radius:28px;
+
+  margin-bottom:36px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(37,99,235,.22),
+      rgba(15,23,42,.95)
+    );
+
+  border:1px solid var(--border);
+
+  box-shadow:var(--shadow);
+}
+
+.hero::before{
+
+  content:"";
+
+  position:absolute;
+
+  inset:0;
+
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(96,165,250,.15),
+      transparent 35%
+    );
+
+  pointer-events:none;
+}
+
+.eyebrow{
+
+  display:inline-block;
+
+  padding:6px 14px;
+
+  border-radius:999px;
+
+  background:#172554;
+
+  color:#93c5fd;
+
+  font-size:12px;
+
+  font-weight:700;
+
+  letter-spacing:.08em;
+
+  text-transform:uppercase;
+}
+
+.hero h1{
+
+  position:relative;
+
+  z-index:2;
+
+  margin:18px 0 16px 0;
+
+  font-size:56px;
+
+  line-height:1.05;
+
+  font-weight:850;
+
+  letter-spacing:-.03em;
+}
+
+.hero p{
+
+  position:relative;
+
+  z-index:2;
+
+  max-width:900px;
+
+  color:#cbd5e1;
+
+  font-size:19px;
+
+  line-height:1.9;
+
+  margin:0;
+}
+
+/* ─────────────────────────────────────────
+   STATUS BAR
+───────────────────────────────────────── */
+
+.status-bar{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:14px;
+
+  padding:16px 20px;
+
+  margin-bottom:28px;
+
+  border-radius:18px;
+
+  background:
+    rgba(17,24,39,.85);
+
+  border:1px solid var(--border);
+
+  backdrop-filter:blur(12px);
+
+  box-shadow:var(--shadow);
+}
+
+.status-dot{
+
+  width:12px;
+  height:12px;
+
+  border-radius:50%;
+
+  background:#fbbf24;
+
+  animation:pulse 1.2s infinite;
+}
+
+@keyframes pulse{
+
+  0%{opacity:.35;}
+  50%{opacity:1;}
+  100%{opacity:.35;}
+}
+
+/* ─────────────────────────────────────────
+   NOTEBOOK CARD
+───────────────────────────────────────── */
+
+.lesson{
+
+  position:relative;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(17,24,39,.96),
+      rgba(15,23,42,.98)
+    );
+
+  border:1px solid var(--border);
+
+  border-radius:26px;
+
+  margin-bottom:42px;
+
+  overflow:hidden;
+
+  box-shadow:var(--shadow);
+}
+
+/* HEADER */
+
+.lesson-header{
+
+  padding:30px 30px 10px 30px;
+}
+
+.lesson-tag{
+
+  display:inline-block;
+
+  padding:6px 12px;
+
+  border-radius:999px;
+
+  background:#1d4ed8;
+
+  color:white;
+
+  font-size:12px;
+
+  font-weight:700;
+
+  letter-spacing:.08em;
+}
+
+.example-tag{
+  background:#7c3aed;
+}
+
+.lesson h2{
+
+  margin:16px 0 10px 0;
+
+  font-size:34px;
+
+  line-height:1.15;
+
+  letter-spacing:-.02em;
+}
+
+.lesson-desc{
+
+  color:#cbd5e1;
+
+  line-height:1.8;
+
+  font-size:16px;
+
+  margin:0;
+  padding:0 30px 24px 30px;
+}
+
+/* ─────────────────────────────────────────
+   EDITOR AREA
+───────────────────────────────────────── */
+
+.editor-box{
+
+  padding:0 24px 24px 24px;
+}
+
+/* IDE TOP BAR */
+
+.editor-topbar{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:14px;
+
+  padding:14px 18px;
+
+  border-radius:18px 18px 0 0;
+
+  background:#0b1120;
+
+  border:1px solid var(--border);
+
+  border-bottom:none;
+}
+
+.editor-dots{
+
+  display:flex;
+  gap:8px;
+}
+
+.editor-dots span{
+
+  width:12px;
+  height:12px;
+
+  border-radius:50%;
+}
+
+.editor-dots span:nth-child(1){
+  background:#ef4444;
+}
+
+.editor-dots span:nth-child(2){
+  background:#f59e0b;
+}
+
+.editor-dots span:nth-child(3){
+  background:#10b981;
+}
+
+.editor-title{
+
+  font-size:14px;
+
+  color:#cbd5e1;
+
+  font-weight:600;
+}
+
+/* CONTROLS */
+
+.controls{
+
+  position:sticky;
+
+  top:14px;
+
+  z-index:10;
+
+  display:flex;
+
+  gap:12px;
+
+  flex-wrap:wrap;
+
+  padding:16px;
+
+  background:
+    rgba(15,23,42,.82);
+
+  backdrop-filter:blur(14px);
+
+  border-left:1px solid var(--border);
+  border-right:1px solid var(--border);
+}
+
+/* BUTTONS */
+
+.controls button{
+
+  border:none;
+
+  border-radius:12px;
+
+  padding:12px 18px;
+
+  background:#1e293b;
+
+  color:#e5eefc;
+
+  font-size:14px;
+
+  font-weight:650;
+
+  cursor:pointer;
+
+  transition:
+    transform .16s ease,
+    background .16s ease;
+
+  border:1px solid rgba(255,255,255,.05);
+}
+
+.controls button:hover{
+
+  transform:translateY(-1px);
+
+  background:#334155;
+}
+
+.run-btn{
+  background:#2563eb !important;
+}
+
+/* CODE EDITOR */
+
+.code-editor{
+
+  width:100%;
+
+  min-height:520px;
+
+  border:none;
+
+  outline:none;
+
+  resize:none;
+
+  overflow:hidden;
+
+  background:#020617;
+
+  color:#dbeafe;
+
+  border-left:1px solid var(--border);
+  border-right:1px solid var(--border);
+
+  padding:28px;
+
+  box-sizing:border-box;
+
+  font-size:15px;
+
+  line-height:1.75;
+
+  white-space:pre;
+
+  tab-size:2;
+
+  font-family:
+    "JetBrains Mono",
+    "Fira Code",
+    ui-monospace,
+    monospace;
+}
+
+/* OUTPUT */
+
+.output-box{
+
+  width:100%;
+
+  min-height:180px;
+
+  background:#020617;
+
+  color:#86efac;
+
+  border:1px solid var(--border);
+
+  border-top:none;
+
+  padding:24px;
+
+  box-sizing:border-box;
+
+  overflow:auto;
+
+  white-space:pre-wrap;
+
+  line-height:1.7;
+
+  font-size:14px;
+
+  font-family:
+    "JetBrains Mono",
+    monospace;
+}
+
+/* PLOTS */
+
+.plot-box{
+
+  margin-top:22px;
+
+  text-align:center;
+}
+
+.plot-box img{
+
+  width:100%;
+
+  border-radius:20px;
+
+  border:1px solid var(--border);
+
+  box-shadow:var(--shadow);
+}
+
+/* MOBILE */
+
+@media(max-width:900px){
+
+  .main-content{
+
+    margin-left:0;
+
+    padding:16px;
+  }
+
+  .hero{
+
+    padding:28px;
+  }
+
+  .hero h1{
+
+    font-size:40px;
+  }
+
+  .lesson h2{
+
+    font-size:28px;
+  }
+
+  .code-editor{
+
+    min-height:360px;
+
+    padding:18px;
+
+    font-size:14px;
+  }
+}
+
+/* HIDE DEFAULT RMD TITLE */
+
+h1.title,
+.title,
+#header{
+  display:none !important;
+}
+
+</style>
+<script>
+
+/* AUTO-RESIZE NOTEBOOK EDITORS */
+
+function autoResize(el){
+
+  el.style.height = 'auto';
+
+  el.style.height =
+    (el.scrollHeight + 2) + 'px';
+}
+
+document.addEventListener(
+  'DOMContentLoaded',
+  function(){
+
+    document
+      .querySelectorAll('.code-editor')
+      .forEach(function(el){
+
+        autoResize(el);
+
+        el.addEventListener(
+          'input',
+          function(){
+            autoResize(el);
+          }
+        );
+      });
+  }
+);
+
+</script>
 <script type="module">
 
 import { WebR } from 'https://webr.r-wasm.org/latest/webr.mjs';
@@ -273,254 +891,16 @@ globalThis.resetCode = function(id){
   ta.value = ta.dataset.default;
 
 };
+.fullpage-text {
+  margin-left: 0 !important;
+  padding-left: 40px;
+  padding-right: 40px;
+  width: 100% !important;
+  max-width: none !important;
+  box-sizing: border-box;
+}
 
 </script>
-<style>
-/* PAGE WIDTH */
-html,
-body{
-  margin:0;
-  padding:0;
-  width:100%;
-  height:100%;
-  overflow-x:hidden;
-
-  background:#0b1220;
-  color:#e6eef6;
-}
-
-/* REMOVE RMarkdown WIDTH LIMITS */
-.main-container,
-.container-fluid,
-.container{
-  width:100% !important;
-  max-width:none !important;
-  margin:0 !important;
-  padding:0 !important;
-}
-
-/* CONTENT */
-.content,
-.hero,
-.lesson{
-  width:100%;
-  max-width:none;
-}
-/* LESSON CONTAINER */
-.lesson{
-
-  width:150%;
-  max-width:1700px;
-
-  margin:2rem auto;
-}
-
-/* EDITOR CONTAINER */
-.editor-box{
-
-  width:100%;
-
-  background:#111827;
-
-  border:1px solid #1f2937;
-
-  border-radius:12px;
-
-  padding:20px;
-
-  overflow:visible;
-
-  box-sizing:border-box;
-}
-
-/* CODE EDITOR */
-.code-editor{
-
-  width:100%;
-
-  min-height:650px;   /* BIGGER HEIGHT */
-
-  background:#010409;
-
-  color:#dbeafe;
-
-  border:1px solid #374151;
-
-  border-radius:10px;
-
-  padding:22px;
-
-  font-size:17px;
-
-  line-height:1.7;
-
-  font-family:
-    ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    Monaco,
-    Consolas,
-    monospace;
-
-  resize:vertical;
-
-  overflow:auto;
-
-  white-space:pre;
-
-  tab-size:2;
-
-  box-sizing:border-box;
-}
-
-/* OUTPUT BOX */
-.output-box{
-
-  margin-top:18px;
-
-  min-height:180px;
-
-  background:#000;
-
-  color:#00ff88;
-
-  border:1px solid #1f2937;
-
-  border-radius:10px;
-
-  padding:18px;
-
-  font-size:15px;
-
-  line-height:1.6;
-
-  overflow:auto;
-
-  white-space:pre-wrap;
-
-  font-family:monospace;
-}
-
-/* PLOT */
-.plot-box{
-
-  margin-top:20px;
-
-  text-align:center;
-
-  display:none;
-}
-
-.plot-box img{
-
-  max-width:100%;
-
-  border-radius:10px;
-
-  border:1px solid #1f2937;
-}
-
-/* BUTTON AREA */
-.controls{
-
-  display:flex;
-
-  flex-wrap:wrap;
-
-  gap:12px;
-
-  margin-bottom:18px;
-}
-
-/* BUTTONS */
-.controls button{
-
-  background:#2563eb;
-
-  color:white;
-
-  border:none;
-
-  border-radius:8px;
-
-  padding:10px 18px;
-
-  font-size:15px;
-
-  font-weight:600;
-
-  cursor:pointer;
-
-  transition:0.2s;
-}
-
-.controls button:hover{
-  background:#3b82f6;
-}
-
-/* MOBILE */
-@media(max-width:1200px){
-
-  .code-editor{
-    min-height:500px;
-    font-size:15px;
-  }
-
-}
-
-@media(max-width:768px){
-
-  body{
-    padding:10px;
-  }
-
-  .lesson{
-    max-width:100%;
-  }
-
-  .code-editor{
-    min-height:380px;
-    font-size:14px;
-    padding:14px;
-  }
-
-}
-.status-bar{
-  background:#111827;
-  border:1px solid #1f2937;
-  padding:12px;
-  border-radius:8px;
-  margin-bottom:20px;
-  font-size:15px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.status-dot{
-  width:12px;
-  height:12px;
-  border-radius:50%;
-  background:#fbbf24; /* yellow = loading */
-  animation:pulse 1.2s infinite ease-in-out;
-}
-
-.status-dot.ready{
-  background:#22c55e; /* green */
-  animation:none;
-}
-
-.status-dot.error{
-  background:#ef4444; /* red */
-  animation:none;
-}
-
-@keyframes pulse{
-  0%{opacity:0.4;}
-  50%{opacity:1;}
-  100%{opacity:0.4;}
-}
-</style>
 <div class="status-bar">
 <p><span id="status-dot" class="status-dot"></span> <span
 id="status-text">Loading WebR…</span></p>
@@ -532,24 +912,99 @@ Practice — R
 <h1>
 Interactive R Practice (WebR)
 </h1>
-<p>
+<p class="fullpage-text">
 Run R in your browser — no server required. Edit the code and click Run.
-For plots, create a PNG named <code>webr_plot.png</code> (example
-below).
+For plots, create a PNG named <code> webr_plot.png </code> (example
+below). Here is example of the modeling <code> sin </code> wave. Here
+first we make a sequence of x, which is done is using a
+build-in-function <code> seq </code> function to find equally 200
+between 0 to 2<span class="math inline">\(\pi\)</span> (which is 360),
+which is given as <code> seq(0,2<span
+class="math inline">\(\pi\)</span>,length.out=200) </code>. Here is code
+to model sin function <code> sin(2x)exp(-0.2x) </code>, where is <code>
+exp(-0.2x) </code> which is finding 0.2x exponential of the 0.2x. The
+function <code> cat(sprintf()) </code> is the syntax used for printing
+in html. In general <code> print()</code> is the actual code for
+printing values in console. To show the picture in webR <code>
+png(“webr_plot.png”, width = 800, height = 300) </code> which is make it
+appear after it save the file in web and display with the code at the
+end of the plot <code> dev.off() </code>.
 </p>
-</header>
-<div class="content">
-<!-- Practice block -->
+<div class="lesson example-lesson" id="example-1">
+
+  <div class="lesson-header">
+
+    <div>
+      <div class="lesson-tag example-tag">EXAMPLE</div>
+      <h2>Simple Sine Wave</h2>
+    </div>
+
+  </div>
+
+  <p class="lesson-desc">Read-only example demonstrating a basic sine plot.</p>
+
+  <div class="editor-box">
+
+    <div class="controls">
+
+      <button type="button"
+        onclick="copyCode(&quot;ex1&quot;)">
+        Copy
+      </button>
+
+      <button type="button"
+        onclick="toggleExample(&quot;ex1&quot;)">
+        Show / Hide Code
+      </button>
+
+    </div>
+
+    <textarea
+      id="taex1"
+      class="code-editor example-editor"
+      spellcheck="false"
+      readonly
+      data-default="
+# Example R practice code
+x <- seq(0, 2*pi, length.out = 200)
+y <- sin(2*x) * exp(-0.2*x)
+cat(sprintf(&quot;x range: %.2f to %.2f\n&quot;, min(x), max(x)))
+cat(sprintf(&quot;y mean: %.4f\n&quot;, mean(y)))
+png(&quot;webr_plot.png&quot;, width = 800, height = 300)
+par(bg = &quot;black&quot;, col.axis = &quot;white&quot;, col.lab = &quot;white&quot;, col.main = &quot;white&quot;)
+plot(x, y, type = &quot;l&quot;, col = &quot;#58a6ff&quot;, lwd = 2, main = &quot;Damped sine wave&quot;)
+dev.off()
+">
+# Example R practice code
+x <- seq(0, 2*pi, length.out = 200)
+y <- sin(2*x) * exp(-0.2*x)
+cat(sprintf("x range: %.2f to %.2f\n", min(x), max(x)))
+cat(sprintf("y mean: %.4f\n", mean(y)))
+png("webr_plot.png", width = 800, height = 300)
+par(bg = "black", col.axis = "white", col.lab = "white", col.main = "white")
+plot(x, y, type = "l", col = "#58a6ff", lwd = 2, main = "Damped sine wave")
+dev.off()
+</textarea>
+
+  </div>
+
+</div>
+<div id="lets-practice-making-plot" class="section level1">
+<h1>Lets practice making plot</h1>
+<p class="fullpage-text">
+Here is the practice block for the previous code, only <code> click run
+</code>.
+</p>
 <div class="lesson" id="lesson-practice1">
 
   <div class="lesson-header">
     <div>
       <div class="lesson-tag">PRACTICE</div>
-      <h2>Practice: Basic R and Plot</h2>
+      <h2> </h2>
     </div>
   </div>
 
-  <p class="lesson-desc">Edit the R code and click Run. To produce a plot, create a PNG file named <code>webr_plot.png</code> in your R code.</p>
+  <p class="lesson-desc"> </p>
 
   <div class="editor-box">
 
@@ -593,6 +1048,203 @@ dev.off()
     <div id="otpractice1" class="output-box">Click ▶ Run</div>
 
     <div id="plpractice1" class="plot-box"></div>
+
+  </div>
+
+</div>
+</p>
+</header>
+<div class="lesson example-lesson" id="example-r1">
+
+  <div class="lesson-header">
+
+    <div>
+      <div class="lesson-tag example-tag">EXAMPLE</div>
+      <h2>Simple Sine Wave</h2>
+    </div>
+
+  </div>
+
+  <p class="lesson-desc">Read-only example demonstrating a basic sine plot.</p>
+
+  <div class="editor-box">
+
+    <div class="controls">
+
+      <button type="button"
+        onclick="copyCode(&quot;exr1&quot;)">
+        Copy
+      </button>
+
+      <button type="button"
+        onclick="toggleExample(&quot;exr1&quot;)">
+        Show / Hide Code
+      </button>
+
+    </div>
+
+    <textarea
+      id="taexr1"
+      class="code-editor example-editor"
+      spellcheck="false"
+      readonly
+      data-default="
+# 1. Generate sample data
+set.seed(123)                 # reproducible results
+x <- rnorm(150, mean = 50)    # numeric predictor
+y <- 3*x + rnorm(150, sd = 20)  # numeric outcome with noise
+# Save plot to WebRs expected file
+png(&quot;webr_plot.png&quot;, width = 800, height = 400)
+# 2. Create scatter plot
+plot(
+  x, y,
+  pch = 19,                   # solid round points
+  col = rgb(30, 144, 255, 120, maxColorValue = 255),  # semi‑transparent blue
+  main = &quot;Detailed Scatter Plot Example&quot;,
+  xlab = &quot;Independent Variable (x)&quot;,
+  ylab = &quot;Dependent Variable (y)&quot;,
+  cex = 1.2                   # point size
+)
+
+# 3. Add a regression line
+model <- lm(y ~ x)
+abline(model, col = &quot;red&quot;, lwd = 2)
+
+# 4. Add a smooth curve (loess)
+lines(
+  lowess(x, y),
+  col = &quot;darkgreen&quot;,
+  lwd = 2
+)
+dev.off()
+">
+# 1. Generate sample data
+set.seed(123)                 # reproducible results
+x <- rnorm(150, mean = 50)    # numeric predictor
+y <- 3*x + rnorm(150, sd = 20)  # numeric outcome with noise
+# Save plot to WebRs expected file
+png("webr_plot.png", width = 800, height = 400)
+# 2. Create scatter plot
+plot(
+  x, y,
+  pch = 19,                   # solid round points
+  col = rgb(30, 144, 255, 120, maxColorValue = 255),  # semi‑transparent blue
+  main = "Detailed Scatter Plot Example",
+  xlab = "Independent Variable (x)",
+  ylab = "Dependent Variable (y)",
+  cex = 1.2                   # point size
+)
+
+# 3. Add a regression line
+model <- lm(y ~ x)
+abline(model, col = "red", lwd = 2)
+
+# 4. Add a smooth curve (loess)
+lines(
+  lowess(x, y),
+  col = "darkgreen",
+  lwd = 2
+)
+dev.off()
+</textarea>
+
+  </div>
+
+</div>
+</div>
+<div id="lets-practice-making-plot-1" class="section level1">
+<h1>Lets practice making plot</h1>
+<div class="lesson" id="lesson-practicer2">
+
+  <div class="lesson-header">
+    <div>
+      <div class="lesson-tag">PRACTICE</div>
+      <h2> </h2>
+    </div>
+  </div>
+
+  <p class="lesson-desc"> </p>
+
+  <div class="editor-box">
+
+    <div class="controls">
+
+      <button type="button" onclick="clearR(&quot;practicer2&quot;)">Clear</button>
+
+      <button type="button" class="run-btn r-run" id="btpracticer2" onclick="runR(&quot;practicer2&quot;)" disabled>
+        ▶ Run
+      </button>
+
+      <button type="button" onclick="copyCode(&quot;practicer2&quot;)">Copy</button>
+
+      <button type="button" onclick="resetCode(&quot;practicer2&quot;)">Reset</button>
+
+    </div>
+
+    <textarea id="tapracticer2" class="code-editor" spellcheck="false"
+      data-default="
+# 1. Generate sample data
+set.seed(123)                 # reproducible results
+x <- rnorm(150, mean = 50)    # numeric predictor
+y <- 3*x + rnorm(150, sd = 20)  # numeric outcome with noise
+# Save plot to WebRs expected file
+png(&quot;webr_plot.png&quot;, width = 800, height = 400)
+# 2. Create scatter plot
+plot(
+  x, y,
+  pch = 19,                   # solid round points
+  col = rgb(30, 144, 255, 120, maxColorValue = 255),  # semi‑transparent blue
+  main = &quot;Detailed Scatter Plot Example&quot;,
+  xlab = &quot;Independent Variable (x)&quot;,
+  ylab = &quot;Dependent Variable (y)&quot;,
+  cex = 1.2                   # point size
+)
+
+# 3. Add a regression line
+model <- lm(y ~ x)
+abline(model, col = &quot;red&quot;, lwd = 2)
+
+# 4. Add a smooth curve (loess)
+lines(
+  lowess(x, y),
+  col = &quot;darkgreen&quot;,
+  lwd = 2
+)
+dev.off()
+">
+# 1. Generate sample data
+set.seed(123)                 # reproducible results
+x <- rnorm(150, mean = 50)    # numeric predictor
+y <- 3*x + rnorm(150, sd = 20)  # numeric outcome with noise
+# Save plot to WebRs expected file
+png("webr_plot.png", width = 800, height = 400)
+# 2. Create scatter plot
+plot(
+  x, y,
+  pch = 19,                   # solid round points
+  col = rgb(30, 144, 255, 120, maxColorValue = 255),  # semi‑transparent blue
+  main = "Detailed Scatter Plot Example",
+  xlab = "Independent Variable (x)",
+  ylab = "Dependent Variable (y)",
+  cex = 1.2                   # point size
+)
+
+# 3. Add a regression line
+model <- lm(y ~ x)
+abline(model, col = "red", lwd = 2)
+
+# 4. Add a smooth curve (loess)
+lines(
+  lowess(x, y),
+  col = "darkgreen",
+  lwd = 2
+)
+dev.off()
+</textarea>
+
+    <div id="otpracticer2" class="output-box">Click ▶ Run</div>
+
+    <div id="plpracticer2" class="plot-box"></div>
 
   </div>
 
