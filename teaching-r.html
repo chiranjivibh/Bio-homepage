@@ -963,6 +963,7 @@ y <- sin(2*x) * exp(-0.2*x)
 cat(sprintf(&quot;x range: %.2f to %.2f\n&quot;, min(x), max(x)))
 cat(sprintf(&quot;y mean: %.4f\n&quot;, mean(y)))
 png(&quot;webr_plot.png&quot;, width = 800, height = 300)
+par(family=&quot;HersheySans&quot;)
 par(bg = &quot;black&quot;, col.axis = &quot;white&quot;, col.lab = &quot;white&quot;, col.main = &quot;white&quot;)
 plot(x, y, type = &quot;l&quot;, col = &quot;#58a6ff&quot;, lwd = 2, main = &quot;Damped sine wave&quot;)
 dev.off()
@@ -973,6 +974,7 @@ y <- sin(2*x) * exp(-0.2*x)
 cat(sprintf("x range: %.2f to %.2f\n", min(x), max(x)))
 cat(sprintf("y mean: %.4f\n", mean(y)))
 png("webr_plot.png", width = 800, height = 300)
+par(family="HersheySans")
 par(bg = "black", col.axis = "white", col.lab = "white", col.main = "white")
 plot(x, y, type = "l", col = "#58a6ff", lwd = 2, main = "Damped sine wave")
 dev.off()
@@ -1018,6 +1020,7 @@ y <- sin(2*x) * exp(-0.2*x)
 cat(sprintf(&quot;x range: %.2f to %.2f\n&quot;, min(x), max(x)))
 cat(sprintf(&quot;y mean: %.4f\n&quot;, mean(y)))
 png(&quot;webr_plot.png&quot;, width = 800, height = 300)
+par(family=&quot;HersheySans&quot;)
 par(bg = &quot;black&quot;, col.axis = &quot;white&quot;, col.lab = &quot;white&quot;, col.main = &quot;white&quot;)
 plot(x, y, type = &quot;l&quot;, col = &quot;#58a6ff&quot;, lwd = 2, main = &quot;Damped sine wave&quot;)
 dev.off()
@@ -1028,6 +1031,7 @@ y <- sin(2*x) * exp(-0.2*x)
 cat(sprintf("x range: %.2f to %.2f\n", min(x), max(x)))
 cat(sprintf("y mean: %.4f\n", mean(y)))
 png("webr_plot.png", width = 800, height = 300)
+par(family="HersheySans")
 par(bg = "black", col.axis = "white", col.lab = "white", col.main = "white")
 plot(x, y, type = "l", col = "#58a6ff", lwd = 2, main = "Damped sine wave")
 dev.off()
@@ -1082,15 +1086,8 @@ set.seed(123)                 # reproducible results
 x <- rnorm(150, mean = 50)    # numeric predictor
 y <- 3*x + rnorm(150, sd = 20)  # numeric outcome with noise
 # Save plot to WebRs expected file
-#png(&quot;webr_plot.png&quot;, width = 800, height = 400)
-
-Cairo::CairoPNG(
-  &quot;webr_plot.png&quot;,
-  width = 900,
-  height = 300
-)
-
-
+png(&quot;webr_plot.png&quot;, width = 800, height = 400)
+par(family=&quot;HersheySans&quot;)
 # 2. Create scatter plot
 plot(
   x, y,
@@ -1119,15 +1116,8 @@ set.seed(123)                 # reproducible results
 x <- rnorm(150, mean = 50)    # numeric predictor
 y <- 3*x + rnorm(150, sd = 20)  # numeric outcome with noise
 # Save plot to WebRs expected file
-#png("webr_plot.png", width = 800, height = 400)
-
-Cairo::CairoPNG(
-  "webr_plot.png",
-  width = 900,
-  height = 300
-)
-
-
+png("webr_plot.png", width = 800, height = 400)
+par(family="HersheySans")
 # 2. Create scatter plot
 plot(
   x, y,
@@ -1193,13 +1183,7 @@ x <- rnorm(150, mean = 50)    # numeric predictor
 y <- 3*x + rnorm(150, sd = 20)  # numeric outcome with noise
 # Save plot to WebRs expected file
 png(&quot;webr_plot.png&quot;, width = 800, height = 400)
-par(
-  family = &quot;sans&quot;,
-  cex.axis = 1.2,
-  cex.lab = 1.3,
-  cex.main = 1.4,
-  mar = c(5, 5, 4, 2)
-)
+par(family=&quot;HersheySans&quot;)
 # 2. Create scatter plot
 plot(
   x, y,
@@ -1229,13 +1213,7 @@ x <- rnorm(150, mean = 50)    # numeric predictor
 y <- 3*x + rnorm(150, sd = 20)  # numeric outcome with noise
 # Save plot to WebRs expected file
 png("webr_plot.png", width = 800, height = 400)
-par(
-  family = "sans",
-  cex.axis = 1.2,
-  cex.lab = 1.3,
-  cex.main = 1.4,
-  mar = c(5, 5, 4, 2)
-)
+par(family="HersheySans")
 # 2. Create scatter plot
 plot(
   x, y,
@@ -1302,7 +1280,7 @@ y <- sin(2*x) * exp(-0.2*x)
 cat(sprintf(&quot;x range: %.2f to %.2f\n&quot;, min(x), max(x)))
 cat(sprintf(&quot;y mean: %.4f\n&quot;, mean(y)))
 png(&quot;webr_plot.png&quot;, width = 800, height = 300)
-svg(&quot;webr_plot.svg&quot;, width = 9, height = 3)
+par(family=&quot;HersheySans&quot;)
 par(bg = &quot;black&quot;, col.axis = &quot;white&quot;, col.lab = &quot;white&quot;, col.main = &quot;white&quot;)
 plot(x, y, type = &quot;l&quot;, col = &quot;#58a6ff&quot;, lwd = 2, main = &quot;Damped sine wave&quot;)
 dev.off()
@@ -1313,7 +1291,7 @@ y <- sin(2*x) * exp(-0.2*x)
 cat(sprintf("x range: %.2f to %.2f\n", min(x), max(x)))
 cat(sprintf("y mean: %.4f\n", mean(y)))
 png("webr_plot.png", width = 800, height = 300)
-svg("webr_plot.svg", width = 9, height = 3)
+par(family="HersheySans")
 par(bg = "black", col.axis = "white", col.lab = "white", col.main = "white")
 plot(x, y, type = "l", col = "#58a6ff", lwd = 2, main = "Damped sine wave")
 dev.off()
@@ -1368,6 +1346,7 @@ cat(sprintf(&quot;Group C median: %.4f
 &quot;, median(groupC)))
 
 png(&quot;webr_plot.png&quot;, width = 800, height = 300)
+par(family=&quot;HersheySans&quot;)
 par(bg = &quot;black&quot;, col.axis = &quot;white&quot;, col.lab = &quot;white&quot;, col.main = &quot;white&quot;)
 boxplot(groupA, groupB, groupC,
         names = c(&quot;Group A&quot;, &quot;Group B&quot;, &quot;Group C&quot;),
@@ -1388,6 +1367,7 @@ cat(sprintf("Group C median: %.4f
 ", median(groupC)))
 
 png("webr_plot.png", width = 800, height = 300)
+par(family="HersheySans")
 par(bg = "black", col.axis = "white", col.lab = "white", col.main = "white")
 boxplot(groupA, groupB, groupC,
         names = c("Group A", "Group B", "Group C"),
@@ -1440,7 +1420,7 @@ cat(sprintf(&quot;Mean: %.4f
 cat(sprintf(&quot;SD:   %.4f
 &quot;, sd(data)))
 png(&quot;webr_plot.png&quot;, width = 800, height = 300)
-par(bg = &quot;black&quot;, col.axis = &quot;white&quot;, col.lab = &quot;white&quot;, col.main = &quot;white&quot;)
+par(bg = &quot;black&quot;, col.axis = &quot;white&quot;, col.lab = &quot;white&quot;, col.main = &quot;white&quot;,family=&quot;HersheySans&quot;)
 hist(data, col = &quot;#58a6ff&quot;, border = &quot;white&quot;, main = &quot;Normal Distribution&quot;, xlab = &quot;Value&quot;)
 dev.off()
 ">
@@ -1452,7 +1432,7 @@ cat(sprintf("Mean: %.4f
 cat(sprintf("SD:   %.4f
 ", sd(data)))
 png("webr_plot.png", width = 800, height = 300)
-par(bg = "black", col.axis = "white", col.lab = "white", col.main = "white")
+par(bg = "black", col.axis = "white", col.lab = "white", col.main = "white",family="HersheySans")
 hist(data, col = "#58a6ff", border = "white", main = "Normal Distribution", xlab = "Value")
 dev.off()
 </textarea>
@@ -1503,7 +1483,7 @@ cat(sprintf(&quot;Slope:     %.4f
 cat(sprintf(&quot;Intercept: %.4f
 &quot;, coef(fit)[1]))
 png(&quot;webr_plot.png&quot;, width = 800, height = 300)
-par(bg = &quot;black&quot;, col.axis = &quot;white&quot;, col.lab = &quot;white&quot;, col.main = &quot;white&quot;)
+par(bg = &quot;black&quot;, col.axis = &quot;white&quot;, col.lab = &quot;white&quot;, col.main = &quot;white&quot;,family=&quot;HersheySans&quot;)
 plot(x, y, col = &quot;#f78166&quot;, pch = 16, main = &quot;Scatter + Trend Line&quot;, xlab = &quot;x&quot;, ylab = &quot;y&quot;)
 abline(fit, col = &quot;#58a6ff&quot;, lwd = 2)
 dev.off()
@@ -1518,7 +1498,7 @@ cat(sprintf("Slope:     %.4f
 cat(sprintf("Intercept: %.4f
 ", coef(fit)[1]))
 png("webr_plot.png", width = 800, height = 300)
-par(bg = "black", col.axis = "white", col.lab = "white", col.main = "white")
+par(bg = "black", col.axis = "white", col.lab = "white", col.main = "white",family="HersheySans")
 plot(x, y, col = "#f78166", pch = 16, main = "Scatter + Trend Line", xlab = "x", ylab = "y")
 abline(fit, col = "#58a6ff", lwd = 2)
 dev.off()
@@ -1568,7 +1548,7 @@ cat(&quot;Counts:
 for (i in seq_along(fruits)) cat(sprintf(&quot;  %s: %d
 &quot;, fruits[i], counts[i]))
 png(&quot;webr_plot.png&quot;, width = 800, height = 300)
-par(bg = &quot;black&quot;, col.axis = &quot;white&quot;, col.lab = &quot;white&quot;, col.main = &quot;white&quot;)
+par(bg = &quot;black&quot;, col.axis = &quot;white&quot;, col.lab = &quot;white&quot;, col.main = &quot;white&quot;,family=&quot;HersheySans&quot;)
 barplot(counts, names.arg = fruits, col = &quot;#3fb950&quot;, border = &quot;white&quot;,
         main = &quot;Fruit Counts&quot;, ylab = &quot;Count&quot;)
 dev.off()
@@ -1581,7 +1561,7 @@ cat("Counts:
 for (i in seq_along(fruits)) cat(sprintf("  %s: %d
 ", fruits[i], counts[i]))
 png("webr_plot.png", width = 800, height = 300)
-par(bg = "black", col.axis = "white", col.lab = "white", col.main = "white")
+par(bg = "black", col.axis = "white", col.lab = "white", col.main = "white",family="HersheySans")
 barplot(counts, names.arg = fruits, col = "#3fb950", border = "white",
         main = "Fruit Counts", ylab = "Count")
 dev.off()
@@ -1635,7 +1615,7 @@ cat(sprintf(&quot;Max |y2|: %.4f
 cat(sprintf(&quot;Max |y3|: %.4f
 &quot;, max(abs(y3))))
 png(&quot;webr_plot.png&quot;, width = 800, height = 300)
-par(bg = &quot;black&quot;, col.axis = &quot;white&quot;, col.lab = &quot;white&quot;, col.main = &quot;white&quot;)
+par(bg = &quot;black&quot;, col.axis = &quot;white&quot;, col.lab = &quot;white&quot;, col.main = &quot;white&quot;,family=&quot;HersheySans&quot;)
 plot(x, y1, type = &quot;l&quot;, col = &quot;#58a6ff&quot;, lwd = 2,
      main = &quot;Sine Harmonics&quot;, xlab = &quot;x&quot;, ylab = &quot;y&quot;, ylim = c(-1, 1))
 lines(x, y2, col = &quot;#f78166&quot;, lwd = 2)
@@ -1656,7 +1636,7 @@ cat(sprintf("Max |y2|: %.4f
 cat(sprintf("Max |y3|: %.4f
 ", max(abs(y3))))
 png("webr_plot.png", width = 800, height = 300)
-par(bg = "black", col.axis = "white", col.lab = "white", col.main = "white")
+par(bg = "black", col.axis = "white", col.lab = "white", col.main = "white",family="HersheySans")
 plot(x, y1, type = "l", col = "#58a6ff", lwd = 2,
      main = "Sine Harmonics", xlab = "x", ylab = "y", ylim = c(-1, 1))
 lines(x, y2, col = "#f78166", lwd = 2)
@@ -1714,7 +1694,7 @@ cat(sprintf(&quot;Group B median: %.4f
 cat(sprintf(&quot;Group C median: %.4f
 &quot;, median(groupC)))
 png(&quot;webr_plot.png&quot;, width = 800, height = 300)
-par(bg = &quot;black&quot;, col.axis = &quot;white&quot;, col.lab = &quot;white&quot;, col.main = &quot;white&quot;)
+par(bg = &quot;black&quot;, col.axis = &quot;white&quot;, col.lab = &quot;white&quot;, col.main = &quot;white&quot;,family=&quot;HersheySans&quot;)
 boxplot(groupA, groupB, groupC,
         names = c(&quot;Group A&quot;, &quot;Group B&quot;, &quot;Group C&quot;),
         col = c(&quot;#58a6ff&quot;, &quot;#f78166&quot;, &quot;#3fb950&quot;),
@@ -1733,7 +1713,7 @@ cat(sprintf("Group B median: %.4f
 cat(sprintf("Group C median: %.4f
 ", median(groupC)))
 png("webr_plot.png", width = 800, height = 300)
-par(bg = "black", col.axis = "white", col.lab = "white", col.main = "white")
+par(bg = "black", col.axis = "white", col.lab = "white", col.main = "white",family="HersheySans")
 boxplot(groupA, groupB, groupC,
         names = c("Group A", "Group B", "Group C"),
         col = c("#58a6ff", "#f78166", "#3fb950"),
