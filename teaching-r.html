@@ -14,7 +14,7 @@
 
 <title>Interactive R — Chiranjivi Bhattarai</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="libs/header-attrs-2.29/header-attrs.js"></script>
 <!-- _includes/head.html  ─  injected into <head> of every page -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="author"   content="Chiranjivi Bhattarai" />
@@ -1082,7 +1082,15 @@ set.seed(123)                 # reproducible results
 x <- rnorm(150, mean = 50)    # numeric predictor
 y <- 3*x + rnorm(150, sd = 20)  # numeric outcome with noise
 # Save plot to WebRs expected file
-png(&quot;webr_plot.png&quot;, width = 800, height = 400)
+#png(&quot;webr_plot.png&quot;, width = 800, height = 400)
+
+Cairo::CairoPNG(
+  &quot;webr_plot.png&quot;,
+  width = 900,
+  height = 300
+)
+
+
 # 2. Create scatter plot
 plot(
   x, y,
@@ -1111,7 +1119,15 @@ set.seed(123)                 # reproducible results
 x <- rnorm(150, mean = 50)    # numeric predictor
 y <- 3*x + rnorm(150, sd = 20)  # numeric outcome with noise
 # Save plot to WebRs expected file
-png("webr_plot.png", width = 800, height = 400)
+#png("webr_plot.png", width = 800, height = 400)
+
+Cairo::CairoPNG(
+  "webr_plot.png",
+  width = 900,
+  height = 300
+)
+
+
 # 2. Create scatter plot
 plot(
   x, y,
@@ -1177,6 +1193,13 @@ x <- rnorm(150, mean = 50)    # numeric predictor
 y <- 3*x + rnorm(150, sd = 20)  # numeric outcome with noise
 # Save plot to WebRs expected file
 png(&quot;webr_plot.png&quot;, width = 800, height = 400)
+par(
+  family = &quot;sans&quot;,
+  cex.axis = 1.2,
+  cex.lab = 1.3,
+  cex.main = 1.4,
+  mar = c(5, 5, 4, 2)
+)
 # 2. Create scatter plot
 plot(
   x, y,
@@ -1206,6 +1229,13 @@ x <- rnorm(150, mean = 50)    # numeric predictor
 y <- 3*x + rnorm(150, sd = 20)  # numeric outcome with noise
 # Save plot to WebRs expected file
 png("webr_plot.png", width = 800, height = 400)
+par(
+  family = "sans",
+  cex.axis = 1.2,
+  cex.lab = 1.3,
+  cex.main = 1.4,
+  mar = c(5, 5, 4, 2)
+)
 # 2. Create scatter plot
 plot(
   x, y,
@@ -1272,6 +1302,7 @@ y <- sin(2*x) * exp(-0.2*x)
 cat(sprintf(&quot;x range: %.2f to %.2f\n&quot;, min(x), max(x)))
 cat(sprintf(&quot;y mean: %.4f\n&quot;, mean(y)))
 png(&quot;webr_plot.png&quot;, width = 800, height = 300)
+svg(&quot;webr_plot.svg&quot;, width = 9, height = 3)
 par(bg = &quot;black&quot;, col.axis = &quot;white&quot;, col.lab = &quot;white&quot;, col.main = &quot;white&quot;)
 plot(x, y, type = &quot;l&quot;, col = &quot;#58a6ff&quot;, lwd = 2, main = &quot;Damped sine wave&quot;)
 dev.off()
@@ -1282,6 +1313,7 @@ y <- sin(2*x) * exp(-0.2*x)
 cat(sprintf("x range: %.2f to %.2f\n", min(x), max(x)))
 cat(sprintf("y mean: %.4f\n", mean(y)))
 png("webr_plot.png", width = 800, height = 300)
+svg("webr_plot.svg", width = 9, height = 3)
 par(bg = "black", col.axis = "white", col.lab = "white", col.main = "white")
 plot(x, y, type = "l", col = "#58a6ff", lwd = 2, main = "Damped sine wave")
 dev.off()
